@@ -472,7 +472,7 @@ $Script=end;
 //Материалы
 
 Material1=CreateMaterial(
-"$C:\SimInTech64\bin\DataBase\HS\MATERIALS\СтЭП823.tbl
+"$c:\SimInTech64\bin\DataBase\HS\MATERIALS\СтЭП823.tbl
 
 
 $Caption=Свойства материала
@@ -902,7 +902,7 @@ $Script=
 
 
 Material2=CreateMaterial(
-"$C:\SimInTech64\bin\DataBase\HS\MATERIALS\Сталь_простая_7800.tbl
+"$c:\SimInTech64\bin\DataBase\HS\MATERIALS\Сталь_простая_7800.tbl
 
 
 $Caption=Свойства материала
@@ -927,7 +927,7 @@ $Script=
 
 
 Material3=CreateMaterial(
-"$C:\SimInTech64\bin\DataBase\HS\MATERIALS\Сталь_простая.tbl
+"$c:\SimInTech64\bin\DataBase\HS\MATERIALS\Сталь_простая.tbl
 
 
 $Caption=Свойства материала

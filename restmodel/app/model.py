@@ -35,7 +35,7 @@ class Model(object):
 	#Открытие модели по имени
         self.cursor.execute("""SELECT filename FROM Modelselection WHERE Name='{}'""".format(name))
         file_name = self.cursor.fetchone()[0]
-        os.system(r'c:\SimInTech64\bin\mmain.exe  "..\..\model-web-app\restmodel\simintech\modbus_control\modbus_control.prt" /nomenu /hidemenus /noborder /setparameter COMMAND_file_name {} /run'.format(file_name))
+        os.system(r'c:\SimInTech64\bin\mmain.exe  "..\..\model-web-app\restmodel\simintech\modbus_control\modbus_control.prt" /setparameter COMMAND_file_name {} /nomainform /hide /run'.format(file_name))
     #Запись в базу, как отдельный процесс
         p_1 = Process(target=self.write_to_db())
         p_1.start()
@@ -46,6 +46,7 @@ class Model(object):
 	#Считывание данных по модбас
         
         self.master_signal = modbus_tcp.TcpMaster(host='localhost',port=1503)
+        time.sleep(10)
         self.cursor.execute(""" SELECT regs FROM Variable ORDER BY id DESC LIMIT 1""")
         size_bits = self.cursor.fetchone()[0]
         self.cursor.execute(""" SELECT id FROM Variable ORDER BY id DESC LIMIT 1""")
@@ -110,8 +111,8 @@ class Model(object):
                 data1 = data
                 time.sleep(1)
                 data = []
-                for m in range(1,int(size*2/110)+2):
-                    data += self.master_signal.execute(1,cst.READ_HOLDING_REGISTERS, int(k[m-1]),int(a[m-1]))
+                for m in range(1,int(size_vals*2/110)+2):
+                    data += self.master_signal.execute(1,cst.READ_HOLDING_REGISTERS, int(start_vals[m-1]),int(count_vals[m-1]))
                 for m in range(1,int(size_bits/2000)+2):
                     data += self.master_signal.execute(1,cst.READ_COILS, int(start_bit[m-1]),int(count_bit[m-1]))
                     
@@ -182,7 +183,6 @@ class Model(object):
 	#Создание архива
         if self.pause != True:
             self.cursor.execute("""INSERT INTO Achive (datetime) VALUES ('{}')""".format(datetime.datetime.now()))
-        
         self.write_to_db()
 	
     def pause(self):

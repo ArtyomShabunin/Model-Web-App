@@ -93,6 +93,6 @@
  <formstate>'0'</formstate>
  <formactivemainpage>'0'</formactivemainpage>
  <formactivepage>'0'</formactivepage>
- <formvisible>'0'</formvisible>
+ <formvisible>'1'</formvisible>
 </dbconfig>
 </Header>
