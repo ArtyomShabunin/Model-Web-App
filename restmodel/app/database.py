@@ -19,8 +19,8 @@ class User(db.Model):
 class Modelselection(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(50), index = True, unique = True)
-    description = db.Column(db.String(200))
-    filename = db.Column(db.String(200))
+    description = db.Column(db.String(200),index = True, unique = True)
+    filename = db.Column(db.String(200),index = True, unique = True)
     variables = db.relationship('Variable', backref = 'Modelselection', lazy = 'dynamic')
     achives = db.relationship('Achive', backref = 'Modelselection', lazy = 'dynamic')
     def __repr__(self):
@@ -30,6 +30,7 @@ class Variable(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(50), index = True, unique = False)
     regs = db.Column(db.Integer)
+    type = db.Column(db.String(50), index = True, unique = False)
     max_value = db.Column(db.Float)
     min_value = db.Column(db.Float)
     measurements = db.relationship('Mesurement', backref = 'variable', lazy = 'dynamic')

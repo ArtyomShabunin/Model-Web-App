@@ -80,6 +80,31 @@ app.layout = html.Div(children=
                                                             
                                                         ),
 														html.Div(id='runmodel-button-output'),]),
+														
+				html.Div(
+					[ 
+						html.H3("Загрузка в базу данных", style = {"textAlign":"left",'color': '#EA0900'}),
+		
+						html.Div(
+                                    [
+
+                                                html.Div(
+                                                    [
+                                                    
+														daq.StopButton(
+                                                            id="write_to_bd_button",
+                                                            buttonText="Загрузить",
+															n_clicks = 0,
+                                                            style={
+                                                                "display": "flex",
+                                                                "justify-content": "left",
+                                                                "align-items": "left",
+                                                                "paddingBottom": "0%",
+																"paddingTop": "0%",
+																"color": "#007417",
+                                                            },
+														), html.Div(id='write_to_bd-button-output'), 
+														],),],),],),
 				html.Div(
 					[ 
 						html.H3("Управление моделью ", style = {"textAlign":"left",'color': '#EA0900'}),
@@ -355,6 +380,14 @@ def RUNMODEL(n_clicks):
 def START(n_clicks):
     if n_clicks:
         requests.get('{}/start_model'.format(host))
+
+#Кнопка записи имен переменных в базу данных
+@app.callback(Output('write_to_bd-button-output','children'),
+ [Input('write_to_bd_button','n_clicks')])
+def WRITE(n_clicks):
+    if n_clicks:
+        requests.get('{}/variable_to_bd/Model'.format(host))
+    return('Переменные записаны в базу данных')
 
 	
 		

@@ -33,9 +33,9 @@ class Model(object):
         
     def init(self,name):
 	#Открытие модели по имени
-        self.cursor.execute("""SELECT id FROM Modelselection WHERE Name='{}'""".format(name))
-        model_id= self.cursor.fetchone()[0]
-        os.system(r'c:\SimInTech64\bin\mmain.exe /hide "..\..\..\..\tpp-simulator\SH\Control\restmodel\simintech\modbus_control\modbus_control.prt" /nomenu /hidemenus /noborder /setparameter COMMAND_ID {} /run'.format(model_id))
+        self.cursor.execute("""SELECT filename FROM Modelselection WHERE Name='{}'""".format(name))
+        file_name = self.cursor.fetchone()[0]
+        os.system(r'c:\SimInTech64\bin\mmain.exe  "..\..\model-web-app\restmodel\simintech\modbus_control\modbus_control.prt" /nomenu /hidemenus /noborder /setparameter COMMAND_file_name {} /run'.format(file_name))
     #Запись в базу, как отдельный процесс
         p_1 = Process(target=self.write_to_db())
         p_1.start()
@@ -46,25 +46,45 @@ class Model(object):
 	#Считывание данных по модбас
         
         self.master_signal = modbus_tcp.TcpMaster(host='localhost',port=1503)
+        self.cursor.execute(""" SELECT regs FROM Variable ORDER BY id DESC LIMIT 1""")
+        size_bits = self.cursor.fetchone()[0]
         self.cursor.execute(""" SELECT id FROM Variable ORDER BY id DESC LIMIT 1""")
-        size = self.cursor.fetchone()[0]
-        k=np.zeros(int(size*2/110)+2)
-        a=np.zeros(int(size*2/110)+2)
-        k[0]=0
-        a[0]=110
+        id_next = self.cursor.fetchone()[0]
+        id_vals=id_next-size_bits
+        self.cursor.execute(""" SELECT regs FROM Variable WHERE id = {}""".format(id_vals-1))
+        size_vals = int((self.cursor.fetchone()[0]+2)/2)
+		
+        start_vals=np.zeros(int(size_vals*2/110)+2)
+        count_vals=np.zeros(int(size_vals*2/110)+2)
+        start_bit = np.zeros(int(size_bits/2000)+2)
+        count_bit = np.zeros(int(size_bits/2000)+2)
+        start_bit[0] = 0
+        count_bit[0] = 2000
+        start_vals[0]=0
+        count_vals[0]=110
         data = []
-        for m in range(1,int(size*2/110)+2):
-            k[m] = k[m-1]+ 110
-            a[m] = 110
-            if m == int(size*2/110):
-               a[m] = size*2 - k[m]
-            data += self.master_signal.execute(1,cst.READ_HOLDING_REGISTERS, int(k[m-1]),int(a[m-1]))
-        n=np.zeros(int(len(data)/2))
-        for i in range(int(len(data)/2)):
+        for m in range(1,int(size_vals*2/110)+2):
+            start_vals[m] = start_vals[m-1]+ 110
+            count_vals[m] = 110
+            if m == int(size_vals*2/110):
+                count_vals[m] = size_vals*2 - start_vals[m]
+            data += self.master_signal.execute(1,cst.READ_HOLDING_REGISTERS, int(start_vals[m-1]),int(count_vals[m-1]))
+        for m in range(1,int(size_bits/2000)+2):
+            start_bit[m] = start_bit[m-1] + 2000
+            count_bit[m] = 2000
+            if m == int(size_bits/2000):
+                count_bit[m] = size_bits - start_bit[m]
+            data += self.master_signal.execute(1,cst.READ_COILS, int(start_bit[m-1]),int(count_bit[m-1]))
+        n=np.zeros(int(len(data)-size_vals))
+        for i in range(size_vals):
             value = struct.unpack('>f', struct.pack('>H', data[1]) + struct.pack('>H', data[0]))[0]
             n[i]=float('{:.3f}'.format(value))
-            data = data[2:]	
+            data = data[2:]
+        for i in range(len(data)):  
+            n[i+size_vals]=data[i]	
         data=pd.Series(n)
+		
+		
         while True:
 	    #Опрос базы данных на значение работы проекта
             self.cursor.execute(""" SELECT id FROM Achive ORDER BY id DESC LIMIT 1""")
@@ -80,9 +100,9 @@ class Model(object):
                         if i == 0:
                             querry = """INSERT INTO Measurement (time,value,achive_id,variable_id) VALUES"""
                         if (i < len(data)-1) :
-                            querry = querry + '({},{},{},{}),'.format("'{}'",j,achive_id,data.index[i]+1)
+                            querry = querry + '({},{},{},{}),'.format("'{}'",j,achive_id,int(id_next-size_vals-size_bits) + i)
                         if i == len(data)-1:    
-                            querry = querry + '({},{},{},{})'.format("'{}'",j,achive_id,data.index[i]+1)
+                            querry = querry + '({},{},{},{})'.format("'{}'",j,achive_id,int(id_next-size_vals-size_bits) + i)
                         current_time = datetime.datetime.now()
                         querry = querry.format(current_time)
                     self.cursor.execute('{}'.format(querry))
@@ -92,13 +112,17 @@ class Model(object):
                 data = []
                 for m in range(1,int(size*2/110)+2):
                     data += self.master_signal.execute(1,cst.READ_HOLDING_REGISTERS, int(k[m-1]),int(a[m-1]))
+                for m in range(1,int(size_bits/2000)+2):
+                    data += self.master_signal.execute(1,cst.READ_COILS, int(start_bit[m-1]),int(count_bit[m-1]))
                     
 
-                n1 = np.zeros(int(len(data)/2))
-                for i in range(int(len(data)/2)):
+                n1=np.zeros(int(len(data)-size_vals))
+                for i in range(size_vals):
                     value = struct.unpack('>f', struct.pack('>H', data[1]) + struct.pack('>H', data[0]))[0]
                     n1[i]=float('{:.3f}'.format(value))
                     data = data[2:]
+                for i in range(len(data)):  
+                    n1[i+size_vals]=data[i]	
                 data=pd.Series(n1)
                 data = data[abs(data1 - data) > 1e-5]  
                 #if len(data)>0:				
@@ -111,8 +135,10 @@ class Model(object):
         model_id= self.cursor.fetchone()[0]
         if model_id == 1:
             f = open('simintech/test_model/modbus_signal/txt/vals.txt')
+            g = open('simintech/test_model/modbus_signal/txt/bits.txt')
         if model_id == 2:
             f = open('simintech/model/modbus_signal/txt/vals.txt')
+            g = open('simintech/model/modbus_signal/txt/bits.txt')
 	#Запись имен в базу данных
         fd = f.readlines()
         for i in range(0,len(fd)):
@@ -120,9 +146,21 @@ class Model(object):
             for j in range(0,len(fd[i])):
                 if fd[i][j] == '\n':
                     fd[i][j] = '' 
-            fd[i] = "".join(fd[i])	
+            fd[i] = "".join(fd[i])
         for i in range(0,len(fd)):
-            self.cursor.execute("""INSERT INTO Variable (id,name,regs,max_value,min_value,model_id) VALUES ('{}','{}','{}','10000','0','{}')""".format(i+1,fd[i],i*2,model_id))
+            self.cursor.execute("""INSERT INTO Variable (name,type,regs,max_value,min_value,model_id) VALUES ('{}','integer','{}','10000','0','{}')""".format(fd[i],i*2,model_id))
+            self.conn.commit()
+        gd = g.readlines()
+        for i in range(0,len(gd)):
+            gd[i]=list(gd[i])
+            for j in range(0,len(gd[i])):
+                if gd[i][j] == '\n':
+                    gd[i][j] = '' 
+            gd[i] = "".join(gd[i])
+        self.cursor.execute(""" SELECT id FROM Variable ORDER BY id DESC LIMIT 1""")
+        id = self.cursor.fetchone()[0]
+        for i in range(0,len(gd)):
+            self.cursor.execute("""INSERT INTO Variable (id,name,type,regs,max_value,min_value,model_id) VALUES ('{}','{}','boolean','{}','1','0','{}')""".format(id+i+1,gd[i],i,model_id))
             self.conn.commit()
 		
 		
