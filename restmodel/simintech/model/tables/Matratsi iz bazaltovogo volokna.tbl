@@ -1,0 +1,44 @@
+﻿
+$Caption=Свойства материала
+$TabType=0
+$GraphType=0
+$ColCount=4
+$RowCount=5
+$MatrixName=M
+$Script=//Свойства материала: матрацы прошивные из базальтового волокна
+$Script=// в обкладках из ткани Т-23
+$Script=
+$Script=//Первый столбец - температура, в градусах Цельсия
+$Script=//Второй - плотность, кг/м^3
+$Script=//Третий - теплопроводность, Вт/(м*К)
+$Script=//Четвёртый - удельная теплоёмкость, Дж/(кг*К)
+$Script=
+$Script=var t[5], ro[5], lamda[5], cp[5], i: integer, j: integer, k, b, M[5, 4];
+$Script=k = 2.9 * 1e-4;
+$Script=b = 4.1 * 1e-2;
+$Script=
+$Script=for (i = 1, 5) begin
+$Script=	t[i] = 100 * (i - 1);
+$Script=	M[i, 1] = [t[i], 1];
+$Script=end;
+$Script=
+$Script=for (i = 1, 5) begin
+$Script=	ro[i] = 75;
+$Script=	M[i, 2] = [ro[i], 2];
+$Script=end;
+$Script=
+$Script=for (i = 1, 5) begin
+$Script=	lamda[i] = k * t[i] + b;
+$Script=	M[i, 3] = [lamda[i], 3];
+$Script=end;
+$Script=
+$Script=for (i = 1, 5) begin
+$Script=	cp[i] = 1.050e3;
+$Script=	M[i, 4] = [cp[i], 4];
+$Script=end;
+
+0	75	0.041	1050
+100	75	0.07	1050
+200	75	0.099	1050
+300	75	0.128	1050
+400	75	0.157	1050

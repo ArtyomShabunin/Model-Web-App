@@ -1,0 +1,69 @@
+﻿
+$Caption=Напорная характеристика
+$TabType=1
+$GraphType=1
+$ColCount=6
+$RowCount=2
+$MatrixName=M
+$Script=//НАПОРНО-РАСХОДНАЯ ХАРАКТЕРИСТИКА НАСОСА
+$Script=
+$Script=var Y[2];
+$Script=Y[1] = 0;
+$Script=Y[2] = 1;
+$Script=
+$Script=var X[11];
+$Script=var deltaX;
+$Script=deltaX = 20 / 20;
+$Script=var i: integer, i1: integer, i2: integer;
+$Script=
+$Script=for (i = 1, 21) begin
+$Script=	X[i] = deltaX * (i - 1)
+$Script=end
+$Script=
+$Script=var a[2], b[2], c[2];
+$Script=
+$Script=a[1] = 0;
+$Script=a[2] = -1.9605E+00;
+$Script=
+$Script=b[1] = 0;
+$Script=b[2] = 7.4692E+00;
+$Script=
+$Script=c[1] = 0;
+$Script=c[2] = 3.2199E+01;
+$Script=
+$Script=var M[2, 21];
+$Script=for (i2 = 1, 21) begin
+$Script=	for (i1 = 1, 2) begin
+$Script=		M[i1, i2] = a[i1] * (deltaX * (i2 - 1))^2 + b[i1] * deltaX * (i2 - 1) + c[i1]
+$Script=	end
+$Script=end
+$Script=
+
+	0	1	2	3	4	5
+0	0	0	0	0	0	0
+1	32.199	37.7077	39.2954	36.9621	30.7078	20.5325
+#####################################
+$Caption=КПД
+$TabType=1
+$GraphType=0
+$ColCount=6
+$RowCount=2
+$MatrixName=M
+$Script=//КПД НАСОСА
+$Script=
+$Script=
+
+	0	1	2	3	4	5
+1	0	0.85	0.82	0.82	0.84	0.75
+0	0	0.85	0.82	0.82	0.84	0.75
+#####################################
+$Caption=Момент сопротивления при малых оборотах
+$TabType=1
+$GraphType=0
+$ColCount=2
+$RowCount=2
+$MatrixName=M
+
+	0	1e9
+0.0	0.0	0.0
+5	97	97

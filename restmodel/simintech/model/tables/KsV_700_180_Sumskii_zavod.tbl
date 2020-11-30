@@ -1,0 +1,290 @@
+﻿
+$GlobalScript=//Характеристики насоса СЭ-1250-70-11
+$GlobalScript=
+$GlobalScript=//В приведенном ниже тексте реализован следующий алгоритм.
+$GlobalScript=//В качестве опорной кривой берется сколотая характеристика насоса при номинальной частоте w0
+$GlobalScript=//H=f(Q),N=f(Q),Eff=f(Q), где
+$GlobalScript=//H-напор; N - мощность, Eff- КПД, Q- объемный расход
+$GlobalScript=//Кривые при других значениях частоты определяются из соотношения
+$GlobalScript=//W=Wabs/W0 - относительная частота вращения
+$GlobalScript=//H(Q,w)=H(Q,w0)*w^2
+$GlobalScript=//N(Q,w)=N(Q,w0)*w^3;
+$GlobalScript=//M(Q,w)=N(Q,w)/(2*pi*w)
+$GlobalScript=//
+$GlobalScript=//Характеристики насоса задаются в виде двумерной таблицы, где
+$GlobalScript=//По оси X - расход в СИ (м^3/c или кг/с)
+$GlobalScript=//По оси Y - относительная частота ротора
+$GlobalScript=//ВНИМАНИЕ - Напор в таблице задается в метрах
+$GlobalScript=//ВНИМАНИЕ - Объемный расход в таблице задается в м^3/c
+$GlobalScript=//ВНИМАНИЕ - Момент в таблице задается в Н*м
+$GlobalScript=//ВНИМАНИЕ - КПД в таблице задается в пределах [0 , 1]
+$GlobalScript=
+$GlobalScript=//######################## Номинальные параметры  #########################
+$GlobalScript=Q0=1250;         //объемный расход, м^3/ч
+$GlobalScript=H0=70;           //напор, м
+$GlobalScript=w0=1500;         //частота вращения, об/мин
+$GlobalScript=ws=1500;         //ближайшая синхронная частота, об/мин
+$GlobalScript=N0=315;          //мощность, кВт
+$GlobalScript=kpd0=0.82;       //КПД
+$GlobalScript=
+$GlobalScript=M0=1e3*N0/(2*pi*w0/60); //момент на рабочем колесе, н*м
+$GlobalScript=
+$GlobalScript=//Сколотая характеристика насоса
+$GlobalScript=Q=   [0.000,  400.0,   800.,  1200.,  1360.];//м3/ч
+$GlobalScript=H=   [ 86.0,   86.0,     81,   71.0,  66.00];// м
+$GlobalScript=N=   [140.0,  160.0,  210.0,  235.0,  240.0];// кВт
+$GlobalScript=kpd= [0.000,  0.590,  0.790,  0.820,  0.800];//
+$GlobalScript=
+$GlobalScript=const Nq=5;     //Число точек по расходу
+$GlobalScript=const Nw=12;    //Число точек по частоте
+$GlobalScript=
+$GlobalScript=var qq[nq],ww[nw],zh[nw,nq],zm[nw,nq],zkpd[nw,nq];
+$GlobalScript=
+$GlobalScript=initialization
+$GlobalScript=Wmin=0.0;
+$GlobalScript=Wmax=1.1;
+$GlobalScript=dW=(Wmax-Wmin)/(Nw-1);
+$GlobalScript=
+$GlobalScript=Km=1e3*60/(2*pi*w0);              //Коэффициент перевода мощности в момент
+$GlobalScript=
+$GlobalScript=for (i=1,nw) ww[i]=wmin+(i-1)*dw;
+$GlobalScript=for (i=1,nq) qq[i]=Q[i]/3600;     //Перевод расхода в м^3/c
+$GlobalScript=
+$GlobalScript=for (i=1,nq) begin
+$GlobalScript= for (j=1,nw) begin
+$GlobalScript=  zh[j,i]=H[i]*ww[j]^2;           //H(w)=H(w0)*w^2
+$GlobalScript=	zm[j,i]=Km*N[i]*ww[j]^2;        //N(w)=N(w0)*w^3; M(w)=N(w)/(2*pi*w)
+$GlobalScript=	zkpd[j,i]=kpd[i]
+$GlobalScript= end;
+$GlobalScript=end;
+$GlobalScript=
+$GlobalScript=end;
+$GlobalScript=
+$GlobalScript=
+$GlobalScript=
+$Caption=Напор, м
+$TabType=1
+$GraphType=0
+$ColCount=11
+$RowCount=6
+$MatrixName=M
+$Script=//НАПОРНО-РАСХОДНАЯ ХАРАКТЕРИСТИКА НАСОСА КсВ 700-180
+$Script=//Задана как табличная функция двух аргументов: расхода и частоты вращения
+$Script=
+$Script=var Y[6];
+$Script=Y[1] = 1;
+$Script=Y[2] = 1337 / 1485;
+$Script=Y[3] = 1188 / 1485;
+$Script=Y[4] = 1040 / 1485;
+$Script=Y[5] = 891 / 1485;
+$Script=Y[6] = 0;
+$Script=
+$Script=var X[11];
+$Script=var deltaX;
+$Script=deltaX = 1600 / 3600 / 10;
+$Script=var i: integer, i1: integer, i2: integer;
+$Script=
+$Script=for (i = 1, 11) begin
+$Script=	X[i] = deltaX * (i - 1)
+$Script=end;
+$Script=
+$Script=var a[6], b[6], c[6];
+$Script=a[1] = -1.503E+03;
+$Script=a[2] = -1.217E+03;
+$Script=a[3] = -9.617E+02;
+$Script=a[4] = -7.363E+02;
+$Script=a[5] = -5.409E+02;
+$Script=a[6] = 0;
+$Script=
+$Script=b[1] = 1.173E+02;
+$Script=b[2] = 9.502E+01;
+$Script=b[3] = 7.508E+01;
+$Script=b[4] = 5.748E+01;
+$Script=b[5] = 4.223E+01;
+$Script=b[6] = 0;
+$Script=
+$Script=c[1] = 2.193E+02;
+$Script=c[2] = 1.776E+02;
+$Script=c[3] = 1.403E+02;
+$Script=c[4] = 1.074E+02;
+$Script=c[5] = 7.893E+01;
+$Script=c[6] = 0;
+$Script=
+$Script=var M[6, 11];
+$Script=for (i2 = 1, 11) begin
+$Script=	for (i1 = 1, 6) begin
+$Script=		M[i1, i2] = a[i1] * (deltaX * (i2 - 1))^2 + b[i1] * deltaX * (i2 - 1) + c[i1]
+$Script=	end
+$Script=end;
+$Script=
+$Script=
+
+	0	0.044444444	0.088888889	0.13333333	0.17777778	0.22222222	0.26666667	0.31111111	0.35555556	0.4	0.44444444
+1	219.3	221.54444	217.85111	208.22	192.65111	171.14444	143.7	110.31778	70.997778	25.74	-25.455556
+0.9003367	177.6	179.41916	176.43042	168.63378	156.02923	138.61679	116.39644	89.368198	57.532049	20.888	-20.563951
+0.8	140.3	141.73723	139.37516	133.21378	123.25309	109.49309	91.933778	70.57516	45.417235	16.46	-16.296543
+0.7003367	107.4	108.50025	106.69165	101.97422	94.347951	83.81284	70.368889	54.016099	34.754469	12.584	-12.495309
+0.6	78.93	79.738444	78.41	74.944667	69.342444	61.603333	51.727333	39.714444	25.564667	9.278	-9.1455556
+0	0	0	0	0	0	0	0	0	0	0	0
+#####################################
+$Caption=КПД
+$TabType=1
+$GraphType=0
+$ColCount=11
+$RowCount=6
+$MatrixName=M
+$Script=//ХАРАКТЕРИСТИКА ЭКОНОМИЧНОСТИ НАСОСА КсВ 700-180
+$Script=//Задана как табличная функция двух аргументов: расхода и частоты вращения
+$Script=
+$Script=var Y[6];
+$Script=Y[1] = 1;
+$Script=Y[2] = 1337 / 1485;
+$Script=Y[3] = 1188 / 1485;
+$Script=Y[4] = 1040 / 1485;
+$Script=Y[5] = 891 / 1485;
+$Script=Y[6] = 0;
+$Script=
+$Script=var X[11];
+$Script=var deltaX;
+$Script=deltaX = 1600 / 3600 / 10;
+$Script=var i: integer, i1: integer, i2: integer;
+$Script=
+$Script=for (i = 1, 11) begin
+$Script=	X[i] = deltaX * (i - 1);
+$Script=end;
+$Script=
+$Script=var a[6], b[6], c[6], d[6], e[6];
+$Script=
+$Script=a[1] = 1.678E+04;
+$Script=a[2] = 1.678E+04;
+$Script=a[3] = 1.678E+04;
+$Script=a[4] = 1.678E+04;
+$Script=a[5] = 1.678E+04;
+$Script=a[6] = 0;
+$Script=
+$Script=b[1] = - 6.403E+03;
+$Script=b[2] = - 6.403E+03;
+$Script=b[3] = - 6.403E+03;
+$Script=b[4] = - 6.403E+03;
+$Script=b[5] = - 6.403E+03;
+$Script=b[6] = 0;
+$Script=
+$Script=c[1] = - 1.746E+03;
+$Script=c[2] = - 1.746E+03;
+$Script=c[3] = - 1.746E+03;
+$Script=c[4] = - 1.746E+03;
+$Script=c[5] = - 1.746E+03;
+$Script=c[6] = 0;
+$Script=
+$Script=d[1] = 8.532E+02;
+$Script=d[2] = 8.532E+02;
+$Script=d[3] = 8.532E+02;
+$Script=d[4] = 8.532E+02;
+$Script=d[5] = 8.532E+02;
+$Script=d[6] = 0;
+$Script=
+$Script=e[1] = 9.166E-02;
+$Script=e[2] = 9.166E-02;
+$Script=e[3] = 9.166E-02;
+$Script=e[4] = 9.166E-02;
+$Script=e[5] = 9.166E-02;
+$Script=e[6] = 0;
+$Script=
+$Script=var M[6, 11];
+$Script=for (i2 = 1, 11) begin
+$Script=	for (i1 = 1, 6) begin
+$Script=		M[i1, i2] = (a[i1] * (deltaX * (i2 - 1)) ^ 4 + b[i1] * (deltaX * (i2 - 1)) ^ 3
+$Script=		+ c[i1] * (deltaX * (i2 - 1)) ^ 2 + d[i1] * deltaX * (i2 - 1) + e[i1]) * 1e-2;
+$Script=		if M[i1, i2] < 0 then begin
+$Script=			M[i1, i2] = 0;
+$Script=		end;
+$Script=	end;
+$Script=end;
+$Script=
+
+	0	0.044444444	0.088888889	0.13333333	0.17777778	0.22222222	0.26666667	0.31111111	0.35555556	0.4	0.44444444
+1	0.0009166	0.34066115	0.5868664	0.72937487	0.7737426	0.74123911	0.66884746	0.60926421	0.6308994	0.8178766	1.2700329
+0.9003367	0.0009166	0.34066115	0.5868664	0.72937487	0.7737426	0.74123911	0.66884746	0.60926421	0.6308994	0.8178766	1.2700329
+0.8	0.0009166	0.34066115	0.5868664	0.72937487	0.7737426	0.74123911	0.66884746	0.60926421	0.6308994	0.8178766	1.2700329
+0.7003367	0.0009166	0.34066115	0.5868664	0.72937487	0.7737426	0.74123911	0.66884746	0.60926421	0.6308994	0.8178766	1.2700329
+0.6	0.0009166	0.34066115	0.5868664	0.72937487	0.7737426	0.74123911	0.66884746	0.60926421	0.6308994	0.8178766	1.2700329
+0	0	0	0	0	0	0	0	0	0	0	0
+#####################################
+$Caption=Момент, н*м
+$TabType=1
+$GraphType=0
+$ColCount=11
+$RowCount=6
+$MatrixName=M
+$Script=//МОМЕНТНАЯ (МОЩНОСТНАЯ) ХАРАКТЕРИСТИКА НАСОСА КсВ 700-180
+$Script=
+$Script=var Y[6];
+$Script=Y[1] = 1;
+$Script=Y[2] = 1337 / 1485;
+$Script=Y[3] = 1188 / 1485;
+$Script=Y[4] = 1040 / 1485;
+$Script=Y[5] = 891 / 1485;
+$Script=Y[6] = 0;
+$Script=
+$Script=var X[11];
+$Script=var deltaX;
+$Script=deltaX = 1600 / 3600 / 100;
+$Script=var i: integer, i1: integer, i2: integer;
+$Script=
+$Script=for (i = 1, 11) begin
+$Script=	X[i] = deltaX * (i - 1)
+$Script=end;
+$Script=
+$Script=var a[6], b[6], c[6], d[6], e[6];
+$Script=a[1] = -1.222E+04;
+$Script=a[2] = -8.908E+03;
+$Script=a[3] = -6.256E+03;
+$Script=a[4] = -4.191E+03;
+$Script=a[5] = -2.639E+03;
+$Script=a[6] = 0;
+$Script=
+$Script=b[1] = - 6.282E+03;
+$Script=b[2] = - 4.580E+03;
+$Script=b[3] = - 3.216E+03;
+$Script=b[4] = - 2.155E+03;
+$Script=b[5] = - 1.357E+03;
+$Script=b[6] = 0;
+$Script=
+$Script=c[1] = 5.555E+03;
+$Script=c[2] = 4.050E+03;
+$Script=c[3] = 2.844E+03;
+$Script=c[4] = 1.905E+03;
+$Script=c[5] = 1.200E+03;
+$Script=c[6] = 0;
+$Script=
+$Script=d[1] = 2.794E+02;
+$Script=d[2] = 2.037E+02;
+$Script=d[3] = 1.431E+02;
+$Script=d[4] = 9.583E+01;
+$Script=d[5] = 6.035E+01;
+$Script=d[6] = 0;
+$Script=
+$Script=e[1] = 2.532E+02;
+$Script=e[2] = 1.846E+02;
+$Script=e[3] = 1.296E+02;
+$Script=e[4] = 8.684E+01;
+$Script=e[5] = 5.469E+01;
+$Script=e[6] = 0;
+$Script=
+$Script=var M[6, 11];
+$Script=for (i2 = 1, 11) begin
+$Script=	for (i1 = 1, 5) begin
+$Script=		M[i1, i2] = (a[i1] * (deltaX * (i2 - 1)) ^ 4 + b[i1] * (deltaX * (i2 - 1)) ^ 3
+$Script=		+ c[i1] * (deltaX * (i2 - 1)) ^ 2 + d[i1] * deltaX * (i2 - 1) + e[i1]) * 1e3 * 60
+$Script=		/ (2 * pi * Y[i1] * 1485);
+$Script=	end;
+$Script=	M[6, i2] = 0;
+$Script=end;
+
+	0	0.0044444444	0.0088888889	0.013333333	0.017777778	0.022222222	0.026666667	0.031111111	0.035555556	0.04	0.044444444
+1	1628.2033	1636.8906	1646.9674	1658.4113	1671.1992	1685.3073	1700.711	1717.3849	1735.3029	1754.4384	1774.7637
+0.9003367	1318.4743	1325.509	1333.6689	1342.9358	1353.2911	1364.7154	1377.1889	1390.6909	1405.2005	1420.6959	1437.1548
+0.8	1041.7414	1047.303	1053.7537	1061.0794	1069.2652	1078.2959	1088.1556	1098.8283	1110.2972	1122.5452	1135.5547
+0.7003367	797.36626	801.62075	806.55564	812.15996	818.42239	825.33125	832.87449	841.03971	849.81414	859.18466	869.13778
+0.6	586.14033	589.26776	592.89546	597.01538	601.61919	606.69831	612.24387	618.24678	624.69763	631.58679	638.90434
+0	0	0	0	0	0	0	0	0	0	0	0

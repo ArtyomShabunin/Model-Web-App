@@ -1,0 +1,181 @@
+﻿
+$GlobalScript=//Характеристики насоса СЭ-1250-70-11
+$GlobalScript=
+$GlobalScript=//В приведенном ниже тексте реализован следующий алгоритм.
+$GlobalScript=//В качестве опорной кривой берется сколотая характеристика насоса при номинальной частоте w0
+$GlobalScript=//H=f(Q),N=f(Q),Eff=f(Q), где
+$GlobalScript=//H-напор; N - мощность, Eff- КПД, Q- объемный расход
+$GlobalScript=//Кривые при других значениях частоты определяются из соотношения
+$GlobalScript=//W=Wabs/W0 - относительная частота вращения
+$GlobalScript=//H(Q,w)=H(Q,w0)*w^2
+$GlobalScript=//N(Q,w)=N(Q,w0)*w^3;
+$GlobalScript=//M(Q,w)=N(Q,w)/(2*pi*w)
+$GlobalScript=//
+$GlobalScript=//Характеристики насоса задаются в виде двумерной таблицы, где
+$GlobalScript=//По оси X - расход в СИ (м^3/c или кг/с)
+$GlobalScript=//По оси Y - относительная частота ротора
+$GlobalScript=//ВНИМАНИЕ - Напор в таблице задается в метрах
+$GlobalScript=//ВНИМАНИЕ - Объемный расход в таблице задается в м^3/c
+$GlobalScript=//ВНИМАНИЕ - Момент в таблице задается в Н*м
+$GlobalScript=//ВНИМАНИЕ - КПД в таблице задается в пределах [0 , 1]
+$GlobalScript=
+$GlobalScript=//######################## Номинальные параметры  #########################
+$GlobalScript=Q0=1250;         //объемный расход, м^3/ч
+$GlobalScript=H0=70;           //напор, м
+$GlobalScript=w0=1500;         //частота вращения, об/мин
+$GlobalScript=ws=1500;         //ближайшая синхронная частота, об/мин
+$GlobalScript=N0=315;          //мощность, кВт
+$GlobalScript=kpd0=0.82;       //КПД
+$GlobalScript=
+$GlobalScript=M0=1e3*N0/(2*pi*w0/60); //момент на рабочем колесе, н*м
+$GlobalScript=
+$GlobalScript=//Сколотая характеристика насоса
+$GlobalScript=Q=   [0.000,  400.0,   800.,  1200.,  1360.];//м3/ч
+$GlobalScript=H=   [ 86.0,   86.0,     81,   71.0,  66.00];// м
+$GlobalScript=N=   [140.0,  160.0,  210.0,  235.0,  240.0];// кВт
+$GlobalScript=kpd= [0.000,  0.590,  0.790,  0.820,  0.800];//
+$GlobalScript=
+$GlobalScript=const Nq=5;     //Число точек по расходу
+$GlobalScript=const Nw=12;    //Число точек по частоте
+$GlobalScript=
+$GlobalScript=var qq[nq],ww[nw],zh[nw,nq],zm[nw,nq],zkpd[nw,nq];
+$GlobalScript=
+$GlobalScript=initialization
+$GlobalScript=Wmin=0.0;
+$GlobalScript=Wmax=1.1;
+$GlobalScript=dW=(Wmax-Wmin)/(Nw-1);
+$GlobalScript=
+$GlobalScript=Km=1e3*60/(2*pi*w0);              //Коэффициент перевода мощности в момент
+$GlobalScript=
+$GlobalScript=for (i=1,nw) ww[i]=wmin+(i-1)*dw;
+$GlobalScript=for (i=1,nq) qq[i]=Q[i]/3600;     //Перевод расхода в м^3/c
+$GlobalScript=
+$GlobalScript=for (i=1,nq) begin
+$GlobalScript= for (j=1,nw) begin
+$GlobalScript=  zh[j,i]=H[i]*ww[j]^2;           //H(w)=H(w0)*w^2
+$GlobalScript=	zm[j,i]=Km*N[i]*ww[j]^2;        //N(w)=N(w0)*w^3; M(w)=N(w)/(2*pi*w)
+$GlobalScript=	zkpd[j,i]=kpd[i]
+$GlobalScript= end;
+$GlobalScript=end;
+$GlobalScript=
+$GlobalScript=end;
+$GlobalScript=
+$GlobalScript=
+$GlobalScript=
+$Caption=Напор, м
+$TabType=1
+$GraphType=0
+$ColCount=11
+$RowCount=2
+$MatrixName=M
+$Script=//НАПОРНО-РАСХОДНАЯ ХАРАКТЕРИСТИКА НАСОСА 1Д 1250-63а "Ливгидромаш", 980 об./мин
+$Script=//Задана как табличная функция двух аргументов: расхода и частоты вращения
+$Script=var Y[2];
+$Script=Y[1] = 1;
+$Script=Y[2] = 0;
+$Script=
+$Script=var X[11];
+$Script=var deltaX;
+$Script=deltaX = 1500 / 3600 / 10;
+$Script=var i: integer;
+$Script=
+$Script=for (i = 1, 11) begin
+$Script=	X[i] = deltaX * (i - 1);
+$Script=end;
+$Script=
+$Script=var a, b, c;
+$Script=a = - 2.021E+02;
+$Script=b = 2.961E+01;
+$Script=c = 2.660E+01;
+$Script=
+$Script=var M[2, 11];
+$Script=for (i = 1, 11) begin
+$Script=	M[1, i] = a * (deltaX * (i - 1)) ^ 2 + b * deltaX * (i - 1) + c;
+$Script=	M[2, i] = 0;
+$Script=end;
+$Script=
+$Script=
+
+	0	0.041666667	0.083333333	0.125	0.16666667	0.20833333	0.25	0.29166667	0.33333333	0.375	0.41666667
+1	26.6	27.482882	27.664028	27.143438	25.921111	23.997049	21.37125	18.043715	14.014444	9.2834375	3.8506944
+0	0	0	0	0	0	0	0	0	0	0	0
+#####################################
+$Caption=КПД
+$TabType=1
+$GraphType=0
+$ColCount=11
+$RowCount=2
+$MatrixName=M
+$Script=//ХАРАКТЕРИСТИКА ЭКОНОМИЧНОСТИ НАСОСА 1Д 1250-63а "Ливгидромаш", 980 об./мин
+$Script=//Задана как табличная функция двух аргументов: расхода и частоты вращения
+$Script=var Y[2];
+$Script=Y[1] = 1;
+$Script=Y[2] = 0;
+$Script=
+$Script=var X[11];
+$Script=var deltaX;
+$Script=deltaX = 1500 / 3600 / 10;
+$Script=var i: integer;
+$Script=
+$Script=for (i = 1, 11) begin
+$Script=	X[i] = deltaX * (i - 1);
+$Script=end;
+$Script=
+$Script=var a, b, c, d;
+$Script=
+$Script=a = 3.521E+03;
+$Script=b = - 3.265E+03;
+$Script=c = 9.285E+02;
+$Script=d = 5.428E-01;
+$Script=
+$Script=var M[2, 11];
+$Script=for (i = 1, 11) begin
+$Script=	M[1, i] = (a * (deltaX * (i - 1)) ^ 3 + b * (deltaX * (i - 1)) ^ 2
+$Script=	+ c * deltaX * (i - 1) + d) * 1e-2;
+$Script=	M[2, i] = 0;
+$Script=	if M[1, i] < 0.05 then begin
+$Script=		M[1, i] = 0.05;
+$Script=	end;
+$Script=end;
+$Script=
+
+	0	0.041666667	0.083333333	0.125	0.16666667	0.20833333	0.25	0.29166667	0.33333333	0.375	0.41666667
+1	0.05	0.33816599	0.57281805	0.72466628	0.80899281	0.84107977	0.83620925	0.80966339	0.7767243	0.75267409	0.7527949
+0	0	0	0	0	0	0	0	0	0	0	0
+#####################################
+$Caption=Момент, н*м
+$TabType=1
+$GraphType=0
+$ColCount=11
+$RowCount=2
+$MatrixName=M
+$Script=//МОМЕНТНАЯ (МОЩНОСТНАЯ) ХАРАКТЕРИСТИКА НАСОСА 1Д 1250-63а "Ливгидромаш", 980 об./мин
+$Script=var Y[2];
+$Script=Y[1] = 1;
+$Script=Y[2] = 0;
+$Script=
+$Script=var X[11];
+$Script=var deltaX;
+$Script=deltaX = 1500 / 3600 / 10;
+$Script=var i: integer;
+$Script=
+$Script=for (i = 1, 11) begin
+$Script=	X[i] = deltaX * (i - 1);
+$Script=end;
+$Script=
+$Script=var a, b, c, d;
+$Script=a = - 3.149E+03;
+$Script=b = 1.598E+03;
+$Script=c = - 2.817E+01;
+$Script=d = 2.824E+01;
+$Script=
+$Script=var M[2, 11];
+$Script=for (i = 1, 11) begin
+$Script=	M[1, i] = (a * (deltaX * (i - 1)) ^ 3 + b * (deltaX * (i - 1)) ^ 2
+$Script=	+ c * deltaX * (i - 1) + d) * 1e3 * 60 / (2 * pi * 980);
+$Script=	M[2, i] = 0;
+$Script=end;
+
+	0	0.041666667	0.083333333	0.125	0.16666667	0.20833333	0.25	0.29166667	0.33333333	0.375	0.41666667
+1	275.17565	288.5521	342.67733	424.23344	519.90254	616.36674	700.30814	758.40886	777.351	743.81667	644.48797
+0	0	0	0	0	0	0	0	0	0	0	0
