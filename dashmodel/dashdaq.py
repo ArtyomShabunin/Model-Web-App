@@ -24,15 +24,32 @@ host = 'http://localhost:5000'
 def transformation(sequence):
     sequence = list(sequence)
     for i in range(0,len(sequence)):
-        if sequence[i] == '\n' or sequence[i] == '[' or sequence[i] == ']':
-            sequence[i] = ' '
+        if sequence[i] == ',':
+            sequence[i] = ' '' '
     str_sequence = "".join(sequence)
     split_sequence = str_sequence.split()
-    for i in range(len(split_sequence)):
+    array1 = split_sequence[0:int(len(split_sequence)/2)]
+    array2 = split_sequence[int(len(split_sequence)/2):len(split_sequence)]
+    return array1,array2
+	
+def transformation2(sequence):
+    sequence = list(sequence)
+    for i in range(0,len(sequence)):
+        if sequence[i] == ',': #or sequence[i] == '[' or sequence[i] == ']':
+            sequence[i] = ' '' '
+    str_sequence = "".join(sequence)
+    split_sequence = str_sequence.split()
+    for i in range(int(len(split_sequence)/2),len(split_sequence)):
         split_sequence[i] = float(split_sequence[i])
     array1 = split_sequence[0:int(len(split_sequence)/2)]
     array2 = split_sequence[int(len(split_sequence)/2):len(split_sequence)]
     return array1,array2
+
+#Запись имен в выпадающий список
+funct = requests.get('{}/variable_to_dash'.format(host))
+funct = funct.text
+funct_variable,funct_id = transformation(funct)	
+
     
 
 
@@ -308,10 +325,8 @@ app.layout = html.Div(children=
                             [ html.H3("Графики функций", style = {"textAlign":"left",'color': '#EA0900',"marginBottom": "0%"}),
 							dcc.Dropdown(
         id='dropdown-graph',
-        options=[
-            {'label': 'X', 'value': 'X'},
-            {'label': 'Y', 'value': 'Y'},
-            {'label': 'Z', 'value': 'Z'}
+        options=[ 
+            {'label': funct_variable[i], 'value': funct_variable[i]}	for i in range(1,len(funct_variable))
         ],
         placeholder="Выберите функцию для построения графика",
     ),
@@ -381,6 +396,7 @@ def START(n_clicks):
     if n_clicks:
         requests.get('{}/start_model'.format(host))
 
+
 #Кнопка записи имен переменных в базу данных
 @app.callback(Output('write_to_bd-button-output','children'),
  [Input('write_to_bd_button','n_clicks')])
@@ -413,15 +429,12 @@ def STOP(n_clicks):
 @app.callback(Output('graph-data-1', 'figure'),
 [Input('dropdown-graph', 'value')],prevent_initial_call=True)
 def build_graph(value):
-    if value == 'X':
-        id = 2
-    elif value == 'Y':
-        id = 1
-    elif value == 'Z':
-        id = 3		
+    for i in range(1,len(funct_variable)):
+        if value == funct_variable[i]:
+	        id = funct_id[i]		
     df = requests.get('{}/build_graph/{}'.format(host,id))
-    time_gr,value_gr = transformation(df.text)
-    fig = px.scatter( x = time_gr, y = value_gr)
+    time_gr,value_gr = transformation2(df.text)
+    fig = px.scatter( x = [time_gr], y = value_gr)
     fig.update_traces(marker_size = 6, line_width = 1, mode = "lines+markers")
     return fig    
         

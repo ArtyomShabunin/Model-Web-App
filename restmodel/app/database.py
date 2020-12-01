@@ -29,7 +29,7 @@ class Modelselection(db.Model):
 class Variable(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(50), index = True, unique = False)
-    regs = db.Column(db.Integer)
+    number = db.Column(db.Integer)
     type = db.Column(db.String(50), index = True, unique = False)
     max_value = db.Column(db.Float)
     min_value = db.Column(db.Float)

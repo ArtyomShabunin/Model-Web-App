@@ -28,6 +28,13 @@ class Model(object):
         self.cursor.execute("UPDATE State SET value = {} WHERE name = 'start_model'".format(0))
         self.cursor.execute("UPDATE State SET value = {} WHERE name = 'pause_model'".format(0))
         self.cursor.execute("UPDATE State SET value = {} WHERE name = 'stop_model'".format(0))
+        self.cursor.execute(""" SELECT number FROM Variable ORDER BY id DESC LIMIT 1""")
+        self.size_bits = self.cursor.fetchone()[0]
+        self.cursor.execute(""" SELECT id FROM Variable ORDER BY id DESC LIMIT 1""")
+        self.id_next = self.cursor.fetchone()[0]
+        self.id_vals=self.id_next-self.size_bits
+        self.cursor.execute(""" SELECT number FROM Variable WHERE id = {}""".format(self.id_vals-1))
+        self.size_vals = int((self.cursor.fetchone()[0]+2)/2)
 
         
         
@@ -46,46 +53,38 @@ class Model(object):
 	#Считывание данных по модбас
         
         self.master_signal = modbus_tcp.TcpMaster(host='localhost',port=1503)
-        time.sleep(10)
-        self.cursor.execute(""" SELECT regs FROM Variable ORDER BY id DESC LIMIT 1""")
-        size_bits = self.cursor.fetchone()[0]
-        self.cursor.execute(""" SELECT id FROM Variable ORDER BY id DESC LIMIT 1""")
-        id_next = self.cursor.fetchone()[0]
-        id_vals=id_next-size_bits
-        self.cursor.execute(""" SELECT regs FROM Variable WHERE id = {}""".format(id_vals-1))
-        size_vals = int((self.cursor.fetchone()[0]+2)/2)
-		
-        start_vals=np.zeros(int(size_vals*2/110)+2)
-        count_vals=np.zeros(int(size_vals*2/110)+2)
-        start_bit = np.zeros(int(size_bits/2000)+2)
-        count_bit = np.zeros(int(size_bits/2000)+2)
+        time.sleep(10)	
+        start_vals=np.zeros(int(self.size_vals*2/110)+2)
+        count_vals=np.zeros(int(self.size_vals*2/110)+2)
+        start_bit = np.zeros(int(self.size_bits/2000)+2)
+        count_bit = np.zeros(int(self.size_bits/2000)+2)
         start_bit[0] = 0
         count_bit[0] = 2000
         start_vals[0]=0
         count_vals[0]=110
         data = []
-        for m in range(1,int(size_vals*2/110)+2):
+        for m in range(1,int(self.size_vals*2/110)+2):
             start_vals[m] = start_vals[m-1]+ 110
             count_vals[m] = 110
-            if m == int(size_vals*2/110):
-                count_vals[m] = size_vals*2 - start_vals[m]
+            if m == int(self.size_vals*2/110):
+                count_vals[m] = self.size_vals*2 - start_vals[m]
             data += self.master_signal.execute(1,cst.READ_HOLDING_REGISTERS, int(start_vals[m-1]),int(count_vals[m-1]))
-        for m in range(1,int(size_bits/2000)+2):
+        for m in range(1,int(self.size_bits/2000)+2):
             start_bit[m] = start_bit[m-1] + 2000
             count_bit[m] = 2000
-            if m == int(size_bits/2000):
-                count_bit[m] = size_bits - start_bit[m]
+            if m == int(self.size_bits/2000):
+                count_bit[m] = self.size_bits - start_bit[m]
             data += self.master_signal.execute(1,cst.READ_COILS, int(start_bit[m-1]),int(count_bit[m-1]))
-        n=np.zeros(int(len(data)-size_vals))
-        for i in range(size_vals):
+        n=np.zeros(int(len(data)-self.size_vals))
+        for i in range(self.size_vals):
             value = struct.unpack('>f', struct.pack('>H', data[1]) + struct.pack('>H', data[0]))[0]
             n[i]=float('{:.3f}'.format(value))
             data = data[2:]
         for i in range(len(data)):  
-            n[i+size_vals]=data[i]	
+            n[i+self.size_vals]=data[i]	
         data=pd.Series(n)
 		
-		
+        
         while True:
 	    #Опрос базы данных на значение работы проекта
             self.cursor.execute(""" SELECT id FROM Achive ORDER BY id DESC LIMIT 1""")
@@ -101,9 +100,9 @@ class Model(object):
                         if i == 0:
                             querry = """INSERT INTO Measurement (time,value,achive_id,variable_id) VALUES"""
                         if (i < len(data)-1) :
-                            querry = querry + '({},{},{},{}),'.format("'{}'",j,achive_id,int(id_next-size_vals-size_bits) + i)
+                            querry = querry + '({},{},{},{}),'.format("'{}'",j,achive_id,int(self.id_next-self.size_vals-self.size_bits) + i)
                         if i == len(data)-1:    
-                            querry = querry + '({},{},{},{})'.format("'{}'",j,achive_id,int(id_next-size_vals-size_bits) + i)
+                            querry = querry + '({},{},{},{})'.format("'{}'",j,achive_id,int(self.id_next-self.size_vals-self.size_bits) + i)
                         current_time = datetime.datetime.now()
                         querry = querry.format(current_time)
                     self.cursor.execute('{}'.format(querry))
@@ -111,19 +110,19 @@ class Model(object):
                 data1 = data
                 time.sleep(1)
                 data = []
-                for m in range(1,int(size_vals*2/110)+2):
+                for m in range(1,int(self.size_vals*2/110)+2):
                     data += self.master_signal.execute(1,cst.READ_HOLDING_REGISTERS, int(start_vals[m-1]),int(count_vals[m-1]))
-                for m in range(1,int(size_bits/2000)+2):
+                for m in range(1,int(self.size_bits/2000)+2):
                     data += self.master_signal.execute(1,cst.READ_COILS, int(start_bit[m-1]),int(count_bit[m-1]))
                     
 
-                n1=np.zeros(int(len(data)-size_vals))
-                for i in range(size_vals):
+                n1=np.zeros(int(len(data)-self.size_vals))
+                for i in range(self.size_vals):
                     value = struct.unpack('>f', struct.pack('>H', data[1]) + struct.pack('>H', data[0]))[0]
                     n1[i]=float('{:.3f}'.format(value))
                     data = data[2:]
                 for i in range(len(data)):  
-                    n1[i+size_vals]=data[i]	
+                    n1[i+self.size_vals]=data[i]	
                 data=pd.Series(n1)
                 data = data[abs(data1 - data) > 1e-5]  
                 #if len(data)>0:				
@@ -149,7 +148,7 @@ class Model(object):
                     fd[i][j] = '' 
             fd[i] = "".join(fd[i])
         for i in range(0,len(fd)):
-            self.cursor.execute("""INSERT INTO Variable (name,type,regs,max_value,min_value,model_id) VALUES ('{}','integer','{}','10000','0','{}')""".format(fd[i],i*2,model_id))
+            self.cursor.execute("""INSERT INTO Variable (name,type,number,max_value,min_value,model_id) VALUES ('{}','registers','{}','10000','0','{}')""".format(fd[i],i*2,model_id))
             self.conn.commit()
         gd = g.readlines()
         for i in range(0,len(gd)):
@@ -161,8 +160,33 @@ class Model(object):
         self.cursor.execute(""" SELECT id FROM Variable ORDER BY id DESC LIMIT 1""")
         id = self.cursor.fetchone()[0]
         for i in range(0,len(gd)):
-            self.cursor.execute("""INSERT INTO Variable (id,name,type,regs,max_value,min_value,model_id) VALUES ('{}','{}','boolean','{}','1','0','{}')""".format(id+i+1,gd[i],i,model_id))
+            self.cursor.execute("""INSERT INTO Variable (id,name,type,number,max_value,min_value,model_id) VALUES ('{}','{}','bits','{}','1','0','{}')""".format(id+i+1,gd[i],i,model_id))
             self.conn.commit()
+    
+    def variable_to_dash(self):
+        funct = pd.read_sql("""SELECT * FROM Variable ORDER BY id DESC LIMIT {}""".format(self.size_bits+self.size_vals),self.conn)
+        funct_name = funct['name'].values
+        funct_id = funct['id'].values
+        string = ''
+        for i in range(len(funct_name)):
+            string += funct_name[i] + ','
+        for i in range(len(funct_id)):
+            string += '{}'.format(funct_id[i]) + ',' 
+        return string
+		
+    def build_graph(self,id):
+        self.cursor.execute(""" SELECT id FROM Achive ORDER BY id DESC LIMIT 1""")
+        achive_id = self.cursor.fetchone()[0]
+        funct = pd.read_sql("SELECT * from Measurement WHERE variable_id = {} and achive_id = {}".format(id,achive_id),self.conn) 
+        funct_time = funct['time'].values
+        funct_value = funct['value'].values
+        string = ''
+        for i in range(len(funct_time)):
+            string += '{}'.format(funct_time[i]) + ','
+        for i in range(len(funct_value)):
+            string += '{}'.format(funct_value[i]) + ',' 
+        return string
+	    
 		
 		
 	

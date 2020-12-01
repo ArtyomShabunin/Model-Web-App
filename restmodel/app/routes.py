@@ -18,21 +18,21 @@ def INITMODEL(name):
 
 	
 #Запрос запуска проекта
-@app.route('/start_model')
+@app.route('/start_model',methods = ['GET'])
 def START():
     print('Кнопка СТАРТ нажата')
     model.start()
-    return 'Start'
+    return (funct)
 
 #Запрос паузы проекта	
-@app.route('/pause_model')
+@app.route('/pause_model',methods = ['GET'])
 def PAUSE():
     print('Кнопка Пауза нажата')
     model.pause()
     return 'Pause'
 	
 #Запрос остановки проекта
-@app.route('/stop_model')        
+@app.route('/stop_model',methods = ['GET'])        
 def STOP():
     print('Кнопка СТОП нажата')
     model.stop()
@@ -41,14 +41,14 @@ def STOP():
 
 
 #Запрос сохранения рестарта
-@app.route('/save_restart_model')  
+@app.route('/save_restart_model',methods = ['GET'])  
 def save_restart(): 
     print('Кнопка Сохранить рестарт нажата')
     model.save_restart()
     return 'Save Restart'
 
 #Запрос запуск с рестарта        
-@app.route('/read_restart_model')  
+@app.route('/read_restart_model',methods = ['GET'])  
 def read_restart(): 
     print('Кнопка Открыть рестарт нажата')    
     model.read_restart()
@@ -60,25 +60,24 @@ def read_restart():
 def variable_to_bd_model(name): 
     print('Переменные записаны в базу данных')    
     model.create_model(name)
-    return 'write variable to bd'
+
+
+#Передача имен переменных в DASH
+@app.route('/variable_to_dash', methods = ['GET'])
+def variable_to_dash():
+    funct = model.variable_to_dash()
+    print('Переменные переданы в выпадающий список')
+    return funct
+	
 
     
-#Запрос построения графиков (ось - время)
-#@app.route('/build_graph/<id>')
-#def build_graph_time(id):
- #   funct = pd.read_sql("SELECT * from Measurement WHERE variable_id = {}".format(id),conn) 
-  #  funct_time = funct['time'].values
-   # funct_value = funct['value'].values
-    #funct = str(funct_time[0:len(funct_time)]) + str(funct_value[0:len(funct_value)]) 
-    #return (funct)
+#Запрос построения графиков 
+@app.route('/build_graph/<id>')
+def build_graph(id):
+    funct = model.build_graph(id)
+    return funct
 	
-#Запрос построения графиков (ось - переменная)
-#@app.route('/build_graph_value/<id>')
-#def build_graph_value(id):
-#    funct = pd.read_sql("SELECT * from Measurement WHERE variable_id = {}".format(id),conn) 
-#    funct_value = funct['value'].values
-#    funct_value = str(funct_value[0:len(funct_value)]) 
-#    return (funct_value)
+
 
     
 

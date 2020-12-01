@@ -90,9 +90,9 @@
  <formtop>'105'</formtop>
  <formright>'1658'</formright>
  <formbottom>'788'</formbottom>
- <formstate>'0'</formstate>
+ <formstate>'1'</formstate>
  <formactivemainpage>'0'</formactivemainpage>
  <formactivepage>'0'</formactivepage>
- <formvisible>'0'</formvisible>
+ <formvisible>'1'</formvisible>
 </dbconfig>
 </Header>
