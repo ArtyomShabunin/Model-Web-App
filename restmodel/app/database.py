@@ -45,6 +45,13 @@ class Measurement(db.Model):
     achive_id = db.Column(db.Integer, db.ForeignKey('achive.id'))
     variable_id = db.Column(db.Integer, db.ForeignKey('variable.id'))
 	
+class Signals(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    time = db.Column(db.DateTime, index = True, default = datetime.utcnow)
+    value = db.Column(db.Integer)
+    achive_id = db.Column(db.Integer, db.ForeignKey('achive.id'))
+    variable_id = db.Column(db.Integer, db.ForeignKey('variable.id'))
+	
 class State(db.Model):
     id=db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(50), index = True, unique = True)

@@ -18,7 +18,7 @@
  <sigcapfiltervals>'*'#13#10</sigcapfiltervals>
  <sigcapfiltertext>'По умолчанию (*)'</sigcapfiltertext>
  <sigcapfilteritemidx>'0'</sigcapfilteritemidx>
- <groupfilterdatanameitems></groupfilterdatanameitems>
+ <groupfilterdatanameitems>'80lbs'#13#10</groupfilterdatanameitems>
  <groupfilterdataname></groupfilterdataname>
  <groupfilterdatavalueitems></groupfilterdatavalueitems>
  <groupfilterdatavalue>'*'</groupfilterdatavalue>
@@ -90,9 +90,9 @@
  <formtop>'105'</formtop>
  <formright>'1658'</formright>
  <formbottom>'788'</formbottom>
- <formstate>'1'</formstate>
+ <formstate>'0'</formstate>
  <formactivemainpage>'0'</formactivemainpage>
  <formactivepage>'0'</formactivepage>
- <formvisible>'1'</formvisible>
+ <formvisible>'0'</formvisible>
 </dbconfig>
 </Header>

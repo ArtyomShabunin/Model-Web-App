@@ -434,7 +434,7 @@ def build_graph(value):
 	        id = funct_id[i]		
     df = requests.get('{}/build_graph/{}'.format(host,id))
     time_gr,value_gr = transformation2(df.text)
-    fig = px.scatter( x = [time_gr], y = value_gr)
+    fig = px.scatter( x = time_gr, y = value_gr)
     fig.update_traces(marker_size = 6, line_width = 1, mode = "lines+markers")
     return fig    
         
@@ -451,6 +451,15 @@ def save_restart(n_clicks):
 def read_restart(n_clicks): 
     if n_clicks:
         requests.get('{}/read_restart_model'.format(host))
+
+array = [1,1,0]
+
+@app.callback(Output('start-indicate', 'value'),
+    [Input('True','True')]
+)
+def update_output(value):
+    value = array[0]
+    return value
 
  
 if __name__ == "__main__":

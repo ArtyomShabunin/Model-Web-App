@@ -22,7 +22,7 @@ def INITMODEL(name):
 def START():
     print('Кнопка СТАРТ нажата')
     model.start()
-    return (funct)
+ 
 
 #Запрос паузы проекта	
 @app.route('/pause_model',methods = ['GET'])
