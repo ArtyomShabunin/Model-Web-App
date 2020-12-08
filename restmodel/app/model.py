@@ -46,7 +46,12 @@ class Model(object):
 		
     def write_to_db(self):
 	    #Подключение к modbus
-        self.master_signal = ModbusTcpClient(host='localhost',port=1503)
+        #self.master_signal = ModbusTcpClient(host='localhost',port=1503)
+        self.master_signal1 = ModbusTcpClient(host='localhost',port=1503)
+        self.master_signal2 = ModbusTcpClient(host='localhost',port=1504)
+        self.master_signal3 = ModbusTcpClient(host='localhost',port=1505)
+        self.master_signal4 = ModbusTcpClient(host='localhost',port=1506)
+        master = [self.master_signal1,self.master_signal2,self.master_signal3,self.master_signal4]
 		# Создаем два DataFrame для битов и регистров
         registers_dataframe = pd.read_sql("""SELECT number,id FROM variable WHERE type='registers' ORDER BY number""", self.conn)
         bits_dataframe = pd.read_sql("""SELECT number,id FROM variable WHERE type='bits' ORDER BY number""", self.conn, columns=['number', 'variable_id'])
@@ -60,11 +65,28 @@ class Model(object):
         # Заполняем колонку achive_id
         bits_dataframe['achive_id'] = achive_id
         registers_dataframe['achive_id'] = achive_id
+        id_next4 = self.cursor.execute(""" SELECT id FROM Variable ORDER BY id DESC LIMIT 1""")
+        for row in id_next4:
+            id_b4 = row['id']
+        id_next3 = self.cursor.execute(""" SELECT id FROM Variable WHERE number_slave = 3 ORDER BY id DESC LIMIT 1""")
+        for row in id_next3:
+            id_b3 = row['id']
+        id_next2 = self.cursor.execute(""" SELECT id FROM Variable WHERE number_slave = 2 ORDER BY id DESC LIMIT 1""")
+        for row in id_next2:
+            id_b2 = row['id']
+        id_next1 = self.cursor.execute(""" SELECT id FROM Variable WHERE number_slave = 1 ORDER BY id DESC LIMIT 1""")
+        for row in id_next1:
+            id_v1 = row['id']
+        size_b2 = id_b2 - id_v1
+        size_b3 = id_b3 - id_b2
+        size_b4 = id_b4 - id_b3	
+        port_ = [1503,1504,1505,1506]		
         # Максимальное число регистров и битов, читаемых за один запрос
         reg_count = registers_dataframe.shape[0]*2
+        bit_count_slave = [size_b2,size_b3,size_b4]
         bit_count = bits_dataframe.shape[0]
         max_reg = 125
-        max_bit = 2000
+        max_bit = 125
         first_time = True
 		
         current_time = datetime.datetime.now()
@@ -82,24 +104,27 @@ class Model(object):
                 reg_data = []
                 for start in range(0,reg_count,max_reg):
                     number = min(reg_count-start, max_reg)
-                    request = self.master_signal.read_holding_registers(start, number, unit=1)
+                    request = master[0].read_holding_registers(start, number, unit=1)
                     result = request.registers
                     reg_data += result
                 reg_data = np.array(reg_data, dtype=np.int16).view(dtype = np.float32)
 				
-                bit_data = []
-                for start in range(0, bit_count, max_bit):
-                    number = min(bit_count-start, max_bit)
-                    request = self.master_signal.read_coils(start, number, unit=1)
-                    result = request.bits
-                    bit_data += result
-                
-				#Время из модели
                 time_data = []
-                request = self.master_signal.read_holding_registers(reg_count, 2, unit=1)
+                request = master[0].read_holding_registers(reg_count, 2, unit=1)
                 result = request.registers
                 time_data += result
                 time_data = np.array(time_data, dtype=np.int16).view(dtype = np.float32)
+				
+                bit_data = []
+                for i in range (0,3):
+                    for start in range(0, bit_count_slave[i], max_bit):
+                        number = min(bit_count_slave[i]-start, max_bit)
+                        request = master[i+1].read_holding_registers(start, number, unit=1)
+                        result = request.registers
+                        bit_data += result
+                
+				#Время из модели
+
                 #Преобразование к нужному формату
                 hour_time = int(time_data // 3600)
                 minute_time = int(time_data // 60)
@@ -143,43 +168,102 @@ class Model(object):
         if model_id == 1:
             f = open('simintech/test_model/modbus_signal/txt/vals.txt')
             g = open('simintech/test_model/modbus_signal/txt/bits.txt')
+
+            fd = f.readlines()
+            for i in range(0,len(fd)):
+                fd[i]=list(fd[i])
+                for j in range(0,len(fd[i])):
+                    if fd[i][j] == '\n':
+                        fd[i][j] = '' 
+                fd[i] = "".join(fd[i])
+            for i in range(0,len(fd)+1):
+                self.cursor.execute("""INSERT INTO Variable (name,type,number,max_value,min_value,model_id) VALUES ('{}','registers','{}','10000','0','{}')""".format(fd[i],i*2,model_id))
+            #self.conn.commit()
+            gd = g.readlines()
+            for i in range(0,len(gd)+1):
+                gd[i]=list(gd[i])
+                for j in range(0,len(gd[i])):
+                    if gd[i][j] == '\n':
+                        gd[i][j] = '' 
+                gd[i] = "".join(gd[i])
+            res_id = self.cursor.execute(""" SELECT id FROM Variable ORDER BY id DESC LIMIT 1""")
+            for row in res_id:
+                id = row['id']
+            for i in range(0,len(gd)):
+                self.cursor.execute("""INSERT INTO Variable (id,name,type,number,max_value,min_value,model_id) VALUES ('{}','{}','bits','{}','1','0','{}')""".format(id+i+1,gd[i],i,model_id))
+            #self.conn.commit()
         if model_id == 2:
-            f = open('simintech/model/modbus_signal/txt/vals.txt')
-            g = open('simintech/model/modbus_signal/txt/bits.txt')
-	#Запись имен в базу данных
-        fd = f.readlines()
-        for i in range(0,len(fd)):
-            fd[i]=list(fd[i])
-            for j in range(0,len(fd[i])):
-                if fd[i][j] == '\n':
-                    fd[i][j] = '' 
-            fd[i] = "".join(fd[i])
-        for i in range(0,len(fd)+1):
-            self.cursor.execute("""INSERT INTO Variable (name,type,number,max_value,min_value,model_id) VALUES ('{}','registers','{}','10000','0','{}')""".format(fd[i],i*2,model_id))
-            #self.conn.commit()
-        gd = g.readlines()
-        for i in range(0,len(gd)+1):
-            gd[i]=list(gd[i])
-            for j in range(0,len(gd[i])):
-                if gd[i][j] == '\n':
-                    gd[i][j] = '' 
-            gd[i] = "".join(gd[i])
-        res_id = self.cursor.execute(""" SELECT id FROM Variable ORDER BY id DESC LIMIT 1""")
-        for row in res_id:
-            id = row['id']
-        for i in range(0,len(gd)):
-            self.cursor.execute("""INSERT INTO Variable (id,name,type,number,max_value,min_value,model_id) VALUES ('{}','{}','bits','{}','1','0','{}')""".format(id+i+1,gd[i],i,model_id))
-            #self.conn.commit()
+            v1 = open('simintech/model/modbus_signal/txt/vals1.txt')
+            b2 = open('simintech/model/modbus_signal/txt/bits2.txt')
+            b3 = open('simintech/model/modbus_signal/txt/bits3.txt')
+            b4 = open('simintech/model/modbus_signal/txt/bits4.txt')
+           
+            v1 = v1.readline()
+            v1=list(v1)
+            for i in range(0,len(v1)):
+                if  v1[i] == '\n':
+                    v1[i] = '' 
+            v1 = "".join(v1)
+            v1 = v1.split(';')
+            for i in range(0,len(v1)):
+                self.cursor.execute("""INSERT INTO Variable (name,type,number,max_value,min_value,model_id,number_slave) VALUES ('{}','registers','{}','10000','0','{}','1')""".format(v1[i],i*2,model_id))
+            
+            b2 = b2.readline()
+            b2=list(b2)
+            for i in range(0,len(b2)):
+                if  b2[i] == '\n':
+                    b2[i] = '' 
+            b2 = "".join(b2)
+            b2 = b2.split(';')
+            v1_id = self.cursor.execute(""" SELECT id FROM Variable ORDER BY id DESC LIMIT 1""")
+            for row in v1_id:
+                id1 = row['id']
+            for i in range(0,len(b2)):
+                self.cursor.execute("""INSERT INTO Variable (id,name,type,number,max_value,min_value,model_id,number_slave) VALUES ('{}','{}','bits','{}','1','0','{}','2')""".format(id1+i+1,b2[i],i,model_id))
+
+            b3 = b3.readline()
+            b3=list(b3)
+            for i in range(0,len(b3)):
+                if  b3[i] == '\n':
+                    b3[i] = '' 
+            b3 = "".join(b3)
+            b3 = b3.split(';')
+            b2_id = self.cursor.execute(""" SELECT id FROM Variable ORDER BY id DESC LIMIT 1""")
+            for row in b2_id:
+                id2 = row['id']
+            for i in range(0,len(b3)):
+                self.cursor.execute("""INSERT INTO Variable (id,name,type,number,max_value,min_value,model_id,number_slave) VALUES ('{}','{}','bits','{}','1','0','{}','3')""".format(id2+i+1,b3[i],i,model_id))
+
+            b4 = b4.readline()
+            b4=list(b4)
+            for i in range(0,len(b4)):
+                if  b4[i] == '\n':
+                    b4[i] = '' 
+            b4 = "".join(b4)
+            b4 = b4.split(';')
+            b3_id = self.cursor.execute(""" SELECT id FROM Variable ORDER BY id DESC LIMIT 1""")
+            for row in b3_id:
+                id3 = row['id']
+            for i in range(0,len(b4)):
+                self.cursor.execute("""INSERT INTO Variable (id,name,type,number,max_value,min_value,model_id,number_slave) VALUES ('{}','{}','bits','{}','1','0','{}','4')""".format(id3+i+1,b4[i],i,model_id))				
+	
     
     def variable_to_dash(self):
-        res_bits = self.cursor.execute(""" SELECT number FROM Variable ORDER BY id DESC LIMIT 1""")
-        for row in res_bits:
-            size_bits = row['number']
+        res_bits1 = self.cursor.execute(""" SELECT number FROM Variable WHERE number_slave = 2 ORDER BY id DESC LIMIT 1""")
+        res_bits2 = self.cursor.execute(""" SELECT number FROM Variable WHERE number_slave = 3 ORDER BY id DESC LIMIT 1""")
+        res_bits3 = self.cursor.execute(""" SELECT number FROM Variable WHERE number_slave = 4 ORDER BY id DESC LIMIT 1""")
+        for row in res_bits1:
+            size_bits1 = row['number'] + 1
+        for row in res_bits2:
+            size_bits2 = row['number'] + 1
+        for row in res_bits3:
+            size_bits3 = row['number'] + 1
+        size_bits = size_bits1 + size_bits2 + size_bits3
         res_id_next = self.cursor.execute(""" SELECT id FROM Variable ORDER BY id DESC LIMIT 1""")
         for row in res_id_next:
             id_next = row['id']
         id_vals=id_next-size_bits
-        res_vals = self.cursor.execute(""" SELECT number FROM Variable WHERE id = {}""".format(id_vals-1))
+        res_vals = self.cursor.execute(""" SELECT number FROM Variable WHERE id = {}""".format(id_vals))
         for row in res_vals:
             size_vals = row['number']        
         size_vals = int((size_vals+2)/2)

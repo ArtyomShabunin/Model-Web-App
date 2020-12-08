@@ -33,6 +33,7 @@ class Variable(db.Model):
     type = db.Column(db.String(50), index = True, unique = False)
     max_value = db.Column(db.Float)
     min_value = db.Column(db.Float)
+    number_slave = db.Column(db.Integer, primary_key = True)
     measurements = db.relationship('Mesurement', backref = 'variable', lazy = 'dynamic')
     model_id = db.Column(db.Integer, db.ForeignKey('modelselection.id'))
     def __repr__(self):
@@ -51,6 +52,7 @@ class Signals(db.Model):
     value = db.Column(db.Integer)
     achive_id = db.Column(db.Integer, db.ForeignKey('achive.id'))
     variable_id = db.Column(db.Integer, db.ForeignKey('variable.id'))
+
 	
 class State(db.Model):
     id=db.Column(db.Integer, primary_key = True)
