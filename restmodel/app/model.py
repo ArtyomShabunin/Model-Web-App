@@ -79,8 +79,7 @@ class Model(object):
             id_v1 = row['id']
         size_b2 = id_b2 - id_v1
         size_b3 = id_b3 - id_b2
-        size_b4 = id_b4 - id_b3	
-        port_ = [1503,1504,1505,1506]		
+        size_b4 = id_b4 - id_b3		
         # Максимальное число регистров и битов, читаемых за один запрос
         reg_count = registers_dataframe.shape[0]*2
         bit_count_slave = [size_b2,size_b3,size_b4]
