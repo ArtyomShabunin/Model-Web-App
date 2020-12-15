@@ -45,10 +45,29 @@ def transformation2(sequence):
     array2 = split_sequence[int(len(split_sequence)/2):len(split_sequence)]
     return array1,array2
 
-#Запись имен в выпадающий список
-funct = requests.get('{}/variable_to_dash'.format(host))
+def transformation3(sequence):
+    sequence = list(sequence)
+    for i in range(0,int(len(sequence)/4)):
+        if sequence[i] == '[' or sequence[i] == ']' or sequence[i] == " "  or sequence[i] == "'": #or sequence[i] == '[' or sequence[i] == ']':
+            sequence[i] = ''
+    for i in range(int(len(sequence)/4), len(sequence)):
+        if sequence[i] == '[' or sequence[i] == ']'  or sequence[i] == "'": #or sequence[i] == '[' or sequence[i] == ']':
+            sequence[i] = ''
+    str_sequence = "".join(sequence)
+    split_sequence = str_sequence.split(',')
+    array1 = split_sequence[0:int(len(split_sequence)/2)]
+    array2 = split_sequence[int(len(split_sequence)/2):len(split_sequence)]
+    return array1, array2
+
+#Запись имен в выпадающий список переменных
+funct = requests.get('{}/variable'.format(host))
 funct = funct.text
 funct_variable,funct_id = transformation(funct)	
+#Запись имен в выпадающий список моделей
+name_model = requests.get('{}/modelselection'.format(host))
+name_model = name_model.text
+name_model, description = transformation3(name_model)
+
 
     
 
@@ -68,35 +87,16 @@ app.layout = html.Div(children=
 			[
 													html.H3("Открытие модели", style = {"textAlign":"left",'color': '#EA0900'}),
 																	html.Div(
-                                    [daq.StopButton(
-                                                            id="my-runtest-button",
-                                                            buttonText="Открыть Тест",
-															disabled = False,
-															size = 130,
-                                                            style={
-                                                                "display": "flex",
-                                                                "justify-content": "left",
-                                                                "align-items": "left",
-                                                                "paddingBottom": "1%",
-															
-                                                            },
-                                                            
-                                                        ),
-														html.Div(id='runtest-button-output'),
-														daq.StopButton(
-                                                            id="my-runmodel-button",
-                                                            buttonText="Открыть Модель",
-															disabled = False,
-															size = 130,
-                                                            style={
-                                                                "display": "flex",
-                                                                "justify-content": "left",
-                                                                "align-items": "left",
-                                                                "paddingBottom": "1%",
-                                                            },
-                                                            
-                                                        ),
-														html.Div(id='runmodel-button-output'),]),
+                                   dcc.Dropdown(
+        id='dropdown-model',
+        options=[ 
+            {'label': description [i], 'value': description [i]}	for i in range(len(description ))
+        ],
+        placeholder="Выберите модель для открытия",
+		disabled = False
+    ), ),
+	html.Div([dcc.Interval(id='interval-component',
+                         interval=1*1000, n_intervals=0)], id="acoolId"),
 														
 				html.Div(
 					[ 
@@ -378,14 +378,14 @@ app.layout = html.Div(children=
     [Input('my-runtest-button','n_clicks')])
 def RUNTEST(n_clicks):
     if n_clicks:
-        requests.get('{}/run_model/TestModel'.format(host))
+        requests.post('{}/run_model/TestModel'.format(host))
  
 #Кнопка открытия модели тренажера 
 @app.callback(Output('runmodel-button-output','children'),
     [Input('my-runmodel-button','n_clicks')])
 def RUNMODEL(n_clicks):
     if n_clicks:
-        requests.get('{}/run_model/Model'.format(host))
+        requests.post('{}/run_model/Model'.format(host))
         		
  
 
@@ -394,7 +394,7 @@ def RUNMODEL(n_clicks):
  [Input('my-start-button','n_clicks')])
 def START(n_clicks):
     if n_clicks:
-        requests.get('{}/start_model'.format(host))
+        requests.put('{}/start_model'.format(host))
 
 
 #Кнопка записи имен переменных в базу данных
@@ -402,7 +402,7 @@ def START(n_clicks):
  [Input('write_to_bd_button','n_clicks')])
 def WRITE(n_clicks):
     if n_clicks:
-        requests.get('{}/variable_to_bd/Model'.format(host))
+        requests.post('{}/variable_to_bd/Model'.format(host))
     return('Переменные записаны в базу данных')
 
 	
@@ -415,7 +415,7 @@ def WRITE(n_clicks):
     [Input('my-pause-button','n_clicks')])
 def PAUSE(n_clicks): 
     if n_clicks:
-        requests.get('{}/pause_model'.format(host))
+        requests.put('{}/pause_model'.format(host))
 
        
 #Кнопка остановить модель
@@ -423,16 +423,26 @@ def PAUSE(n_clicks):
    [Input('my-stop-button','n_clicks')])
 def STOP(n_clicks):
     if n_clicks:
-        requests.get('{}/stop_model'.format(host))
+        requests.put('{}/stop_model'.format(host))
+
+#Выбор открытия модели
+@app.callback(Output('dropdown-model', 'disabled'),[Input('dropdown-model', 'value')],prevent_initial_call=True)
+def modelselection(value):
+    for i in range(len(description)):
+        if value == description[i]:
+            requests.post('{}/run_model/{}'.format(host,name_model[i]))
+            disabled = True
+		
+
 
 #Выбор переменной из списка для построения графика    
 @app.callback(Output('graph-data-1', 'figure'),
-[Input('dropdown-graph', 'value')],prevent_initial_call=True)
+[Input('dropdown-graph', 'value'), ],prevent_initial_call=True)
 def build_graph(value):
     for i in range(1,len(funct_variable)):
         if value == funct_variable[i]:
 	        id = funct_id[i]		
-    df = requests.get('{}/build_graph/{}'.format(host,id))
+    df = requests.get('{}/measurement_signals/{}'.format(host,id))
     time_gr,value_gr = transformation2(df.text)
     fig = px.scatter( x = time_gr, y = value_gr)
     fig.update_traces(marker_size = 6, line_width = 1, mode = "lines+markers")
@@ -443,14 +453,14 @@ def build_graph(value):
     [Input('my-save_restart-button','n_clicks')])
 def save_restart(n_clicks): 
     if n_clicks:
-        requests.get('{}/save_restart_model'.format(host))
+        requests.post('{}/save_restart_model'.format(host))
        
 #Кнопка открыть модель с рестарта
 @app.callback(Output('read_restart-button-output','children'),
    [Input('my-read_restart-button','n_clicks')])
 def read_restart(n_clicks): 
     if n_clicks:
-        requests.get('{}/read_restart_model'.format(host))
+        requests.put('{}/read_restart_model'.format(host))
 
 array = [1,1,0]
 

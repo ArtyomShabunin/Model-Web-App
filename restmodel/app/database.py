@@ -23,6 +23,7 @@ class Modelselection(db.Model):
     filename = db.Column(db.String(200),index = True, unique = True)
     variables = db.relationship('Variable', backref = 'Modelselection', lazy = 'dynamic')
     achives = db.relationship('Achive', backref = 'Modelselection', lazy = 'dynamic')
+    active = db.Column(db.Integer)
     def __repr__(self):
         return '<Modelselection-{}>'.format(self.name)
 

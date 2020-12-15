@@ -86,13 +86,13 @@
   <sigsortcol>'-1'</sigsortcol>
   <sigsortdir>'0'</sigsortdir>
  </globfilter>
- <formleft>'904'</formleft>
- <formtop>'75'</formtop>
- <formright>'1768'</formright>
- <formbottom>'544'</formbottom>
- <formstate>'0'</formstate>
+ <formleft>'-8'</formleft>
+ <formtop>'-8'</formtop>
+ <formright>'1928'</formright>
+ <formbottom>'1048'</formbottom>
+ <formstate>'2'</formstate>
  <formactivemainpage>'0'</formactivemainpage>
  <formactivepage>'0'</formactivepage>
- <formvisible>'1'</formvisible>
+ <formvisible>'0'</formvisible>
 </dbconfig>
 </Header>

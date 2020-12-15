@@ -6,11 +6,14 @@ from app.model import Model
 model = Model()
 
 
-
+@app.route('/modelselection',methods = ['GET'])
+def Modelselection():
+    name_model=model.modelselection()
+    return name_model
 
 		
 #Запрос открытия модели тренажера
-@app.route('/run_model/<string:name>',methods = ['GET'])
+@app.route('/run_model/<string:name>',methods = ['POST'])
 def INITMODEL(name):
     print('Кнопка ОТКРЫТЬ нажата')
     model.init(name)
@@ -18,21 +21,22 @@ def INITMODEL(name):
 
 	
 #Запрос запуска проекта
-@app.route('/start_model',methods = ['GET'])
+@app.route('/start_model',methods = ['PUT'])
 def START():
     print('Кнопка СТАРТ нажата')
     model.start()
+    return 'Start'
  
 
 #Запрос паузы проекта	
-@app.route('/pause_model',methods = ['GET'])
+@app.route('/pause_model',methods = ['PUT'])
 def PAUSE():
     print('Кнопка Пауза нажата')
-    model.pause()
+    model.pause_model()
     return 'Pause'
 	
 #Запрос остановки проекта
-@app.route('/stop_model',methods = ['GET'])        
+@app.route('/stop_model',methods = ['PUT'])        
 def STOP():
     print('Кнопка СТОП нажата')
     model.stop()
@@ -41,14 +45,14 @@ def STOP():
 
 
 #Запрос сохранения рестарта
-@app.route('/save_restart_model',methods = ['GET'])  
+@app.route('/save_restart_model',methods = ['POST'])  
 def save_restart(): 
     print('Кнопка Сохранить рестарт нажата')
     model.save_restart()
     return 'Save Restart'
 
 #Запрос запуск с рестарта        
-@app.route('/read_restart_model',methods = ['GET'])  
+@app.route('/read_restart_model',methods = ['PUT'])  
 def read_restart(): 
     print('Кнопка Открыть рестарт нажата')    
     model.read_restart()
@@ -56,25 +60,26 @@ def read_restart():
 	
 	
 #Запись переменных в базу данных
-@app.route('/variable_to_bd/<string:name>',methods = ['GET'])  
+@app.route('/variable_to_bd/<string:name>',methods = ['POST'])  
 def variable_to_bd_model(name): 
     print('Переменные записаны в базу данных')    
     model.create_model(name)
+    return 'Variable to bd'
 
 
 #Передача имен переменных в DASH
-@app.route('/variable_to_dash', methods = ['GET'])
-def variable_to_dash():
-    funct = model.variable_to_dash()
+@app.route('/variable', methods = ['GET'])
+def variable():
+    funct = model.variable()
     print('Переменные переданы в выпадающий список')
     return funct
 	
 
     
 #Запрос построения графиков 
-@app.route('/build_graph/<id>')
+@app.route('/measurement_signals/<id>', methods = ['GET'])
 def build_graph(id):
-    funct = model.build_graph(id)
+    funct = model.measurement_signals(id)
     return funct
 	
 
