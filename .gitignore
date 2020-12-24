@@ -1,4 +1,5 @@
-hsolver_src.txt
+*hsolver_src.txt
+*dbconf
 *.dblocalconf
 *.dblocalconf*
 *.DS_Store

@@ -2,7 +2,7 @@
 
 Table1=CreateTables(
 [2,2,2],
-"$C:\Users\TAGubarevich\model-web-app\restmodel\simintech\model\tables\НМШ-25-4_025.tbl
+"$C:\Users\ASShabunin\model-web-app\restmodel\simintech\model\tables\НМШ-25-4_025.tbl
 
 $GlobalScript=//Характеристики насоса СЭ-1250-70-11
 $GlobalScript=

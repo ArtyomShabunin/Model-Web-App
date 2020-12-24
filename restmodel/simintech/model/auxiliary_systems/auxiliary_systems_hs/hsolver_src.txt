@@ -2,7 +2,7 @@
 
 Table1=CreateTables(
 [2,2,2],
-"$C:\Users\TAGubarevich\model-web-app\restmodel\simintech\model\tables\1Кс-50-55 _2.tbl
+"$C:\Users\ASShabunin\model-web-app\restmodel\simintech\model\tables\1Кс-50-55 _2.tbl
 
 $GlobalScript=//Характеристики насоса СЭ-1250-70-11
 $GlobalScript=
@@ -122,7 +122,7 @@ $Script=M=[12#0,[142.79,151.25,159.72,168.2,178.76,190.14,201.6,212.31,224.72,23
 
 Table2=CreateTables(
 [2,2,2],
-"$C:\Users\TAGubarevich\model-web-app\restmodel\simintech\model\tables\Х80-50-250.tbl
+"$C:\Users\ASShabunin\model-web-app\restmodel\simintech\model\tables\Х80-50-250.tbl
 
 $GlobalScript=//Характеристики насоса КЭН первой ступени БалАЭС типа КсВА-1500-120
 $GlobalScript=
@@ -241,7 +241,7 @@ $Script=M=[17#0,[68.875,98.167,127.88,154.04,177.38,205.9,222.04,244.92,266.73,2
 
 Table3=CreateTables(
 [2,2,2],
-"$C:\Users\TAGubarevich\model-web-app\restmodel\simintech\model\tables\Н1В6_5_v2.tbl
+"$C:\Users\ASShabunin\model-web-app\restmodel\simintech\model\tables\Н1В6_5_v2.tbl
 
 $GlobalScript=//Характеристики насоса СЭ-1250-70-11
 $GlobalScript=
@@ -361,7 +361,7 @@ $Script=M=[14#0,[0,83.38,77.03,70.81,64.59,57.96,51.95,45.67,39.52,33.17,27.19,2
 
 Table4=CreateTables(
 [2,2,2],
-"$C:\Users\TAGubarevich\model-web-app\restmodel\simintech\model\tables\Кс-12-50 _2.tbl
+"$C:\Users\ASShabunin\model-web-app\restmodel\simintech\model\tables\Кс-12-50 _2.tbl
 
 $GlobalScript=//Характеристики насоса СЭ-1250-70-11
 $GlobalScript=
@@ -25801,8 +25801,8 @@ HSList4.ThermalBound_1=CreateThermalBound(
 "HSList4.ThermalBound_1",
 3,
 2,
-[100.00074748735 , 100.00074748735 , 100.00074748735],
-[21.1972059434136 , 21.1972059434136 , 21.1972059434136],
+[99.9990485622993 , 99.9990485622993 , 99.9990485622993],
+[0.646338023138669 , 0.646338023138669 , 0.646338023138669],
 [-10000 , -10000 , -10000]
 );
 

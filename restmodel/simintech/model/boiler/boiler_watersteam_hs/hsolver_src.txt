@@ -2,7 +2,7 @@
 
 Table1=CreateTables(
 [2,2,2],
-"$C:\Users\TAGubarevich\model-web-app\restmodel\simintech\model\tables\APE_720_185_4_Sumskii_zavod_otsek_1.tbl
+"$C:\Users\ASShabunin\model-web-app\restmodel\simintech\model\tables\APE_720_185_4_Sumskii_zavod_otsek_1.tbl
 
 $GlobalScript=//Характеристики насоса СЭ-1250-70-11
 $GlobalScript=
@@ -237,7 +237,7 @@ $Script=end;
 
 Table2=CreateTables(
 [2,2,2],
-"$C:\Users\TAGubarevich\model-web-app\restmodel\simintech\model\tables\APE_720_185_4_Sumskii_zavod_otsek_2.tbl
+"$C:\Users\ASShabunin\model-web-app\restmodel\simintech\model\tables\APE_720_185_4_Sumskii_zavod_otsek_2.tbl
 
 $GlobalScript=//Характеристики насоса СЭ-1250-70-11
 $GlobalScript=
