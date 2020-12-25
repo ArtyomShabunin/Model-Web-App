@@ -86,10 +86,10 @@
   <sigsortcol>'-1'</sigsortcol>
   <sigsortdir>'0'</sigsortdir>
  </globfilter>
- <formleft>'367'</formleft>
- <formtop>'105'</formtop>
- <formright>'1658'</formright>
- <formbottom>'788'</formbottom>
+ <formleft>'0'</formleft>
+ <formtop>'77'</formtop>
+ <formright>'1280'</formright>
+ <formbottom>'760'</formbottom>
  <formstate>'0'</formstate>
  <formactivemainpage>'0'</formactivemainpage>
  <formactivepage>'0'</formactivepage>

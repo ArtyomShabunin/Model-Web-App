@@ -9,7 +9,7 @@ import struct
 import pandas as pd
 from multiprocessing import Process
 import numpy as np
-import subprocess  
+import subprocess
 import datetime
 from sqlalchemy import create_engine
 from pymodbus.client.sync import ModbusTcpClient
@@ -18,8 +18,8 @@ import subprocess
 from datetime import timedelta
 
 class Model(object):
-   
-	
+
+
     def __init__(self):
         #Подключение к Modbus
         self.master_control = modbus_tcp.TcpMaster(host='localhost',port=1502)
@@ -44,7 +44,7 @@ class Model(object):
         name_model = str(name_model)
         return name_model
 
-            
+
     def init(self,name):
 	#Открытие модели по имени
         res_filename = self.cursor.execute("""SELECT filename FROM Modelselection WHERE Name='{}'""".format(name))
@@ -55,9 +55,9 @@ class Model(object):
             file_name = row['filename']
         subprocess.Popen(r'c:\SimInTech64\bin\mmain.exe  "..\..\model-web-app\restmodel\simintech\modbus_control\modbus_control.prt" /setparameter COMMAND_file_name {} /nomainform /hide /run'.format(file_name), shell = True)
 
-        
-		
-		
+
+
+
     def write_to_db(self):
 	    #Подключение к modbus
         self.master_signal1 = ModbusTcpClient(host='localhost',port=1503)
@@ -92,7 +92,7 @@ class Model(object):
             id_v1 = row['id']
         size_b2 = id_b2 - id_v1
         size_b3 = id_b3 - id_b2
-        size_b4 = id_b4 - id_b3		
+        size_b4 = id_b4 - id_b3
         # Максимальное число регистров и битов, читаемых за один запрос
         reg_count = registers_dataframe.shape[0]*2
         bit_count_slave = [size_b2,size_b3,size_b4]
@@ -100,16 +100,16 @@ class Model(object):
         max_reg = 125
         max_bit = 125
         first_time = True
-		
+
         current_time = datetime.datetime.now()
         while True:
             start_time = time.time()
 	    #Опрос базы данных на значение работы проекта
             res_run = self.cursor.execute("SELECT value FROM State WHERE id = 1")
             for row in res_run:
-                run = row['value']	
+                run = row['value']
             if run != True:
-               break  
+               break
             else:
 			#Регистры
                 reg_data = []
@@ -119,7 +119,7 @@ class Model(object):
                     result = request.registers
                     reg_data += result
                 reg_data = np.array(reg_data, dtype=np.int16).view(dtype = np.float32)
-			#Время	
+			#Время
                 time_data = []
                 request = master[0].read_holding_registers(reg_count, 2, unit=1)
                 result = request.registers
@@ -138,16 +138,16 @@ class Model(object):
                 hour_time = int(time_data // 3600)
                 minute_time = int(time_data // 60)
                 second_time = int(time_data % 60)
-           
-                # Запись времени в DataFrame 
-                
+
+                # Запись времени в DataFrame
+
                 bits_dataframe['time'] = current_time + timedelta(0,second_time,0,0,minute_time,hour_time,0)
                 registers_dataframe['time'] = current_time + timedelta(0,second_time,0,0,minute_time,hour_time,0)
-    
+
                 # Запись новых значений в DataFrame
                 bits_dataframe['value'] = np.array(bit_data[:bit_count], dtype=np.int16)
                 registers_dataframe['value'] = reg_data
-    
+
                 # Проверка значений на изменение
                 if first_time:
                     bits_dataframe['for_DB'] = True
@@ -156,17 +156,17 @@ class Model(object):
                 else:
                     bits_dataframe['for_DB'] = bits_dataframe['value'] !=  bits_dataframe['old_value']
                     registers_dataframe['for_DB'] = abs(registers_dataframe['value'] - registers_dataframe['old_value']) / np.maximum(abs(registers_dataframe['value']), 1e-9) > 0.001
-    
+
                 # Запись старых значений в DataFrame
                 bits_dataframe['old_value'] = bits_dataframe['value']
                 registers_dataframe['old_value'] = registers_dataframe['value']
-    
+
                 # Запись данных в базу
                 bits_dataframe[['value', 'achive_id', 'variable_id', 'time']][bits_dataframe['for_DB']].to_sql('signals', self.conn, if_exists='append', index=False, method='multi')
                 registers_dataframe[['value', 'achive_id', 'variable_id', 'time']][registers_dataframe['for_DB']].to_sql('measurement', self.conn, if_exists='append', index=False, method='multi')
-    
+
                 time.sleep(max(0, 1 + start_time - time.time()))
-        
+
     def start(self):
 	#Передача по ТСР команды старт
         self.master_control.execute(1, cst.WRITE_MULTIPLE_REGISTERS,6,output_value=[0,16256])
@@ -189,7 +189,7 @@ class Model(object):
         p_1 = Process(target=self.write_to_db())
         p_1.start()
         self.write_to_db()
-	
+
     def pause_model(self):
 	#Передача по ТСР команды пауза
         self.pause = True
@@ -206,8 +206,8 @@ class Model(object):
         self.cursor.execute("UPDATE State SET value = {} WHERE name='start_model'".format(int(value_start)))
         self.cursor.execute("UPDATE State SET value = {} WHERE name='pause_model'".format(int(value_pause)))
         self.cursor.execute("UPDATE State SET value = {} WHERE name='stop_model'".format(int(value_stop)))
-       
-	
+
+
     def stop(self):
 	#Передача по ТСР команды стоп
         self.pause = False
@@ -227,11 +227,11 @@ class Model(object):
         self.cursor.execute("UPDATE State SET value = {} WHERE name='stop_model'".format(int(value_stop)))
 
 
-		
+
     def save_restart(self):
 	#Передача по ТСР команды сохранить рестар
         self.master_control.execute(1,cst.WRITE_MULTIPLE_REGISTERS,8,output_value=[0,16256])
-		
+
     def read_restart(self):
 	#Передача по ТСР команды открыть рестарт
         self.master_control.execute(1,cst.WRITE_MULTIPLE_REGISTERS,10,output_value=[0,16256])
@@ -245,9 +245,9 @@ class Model(object):
 	#Передача в базу данных значений состояния проекта
         self.cursor.execute("UPDATE State SET value = {} WHERE name='start_model'".format(int(value_start)))
         self.cursor.execute("UPDATE State SET value = {} WHERE name='pause_model'".format(int(value_pause)))
-        self.cursor.execute("UPDATE State SET value = {} WHERE name='stop_model'".format(int(value_stop))) 
+        self.cursor.execute("UPDATE State SET value = {} WHERE name='stop_model'".format(int(value_stop)))
 
-		
+
     def create_model(self,name):
         res_id = self.cursor.execute("""SELECT id FROM Modelselection WHERE Name='{}'""".format(name))
         #model_id= self.cursor.fetchone()[0]
@@ -261,7 +261,7 @@ class Model(object):
                 fd[i]=list(fd[i])
                 for j in range(0,len(fd[i])):
                     if fd[i][j] == '\n':
-                        fd[i][j] = '' 
+                        fd[i][j] = ''
                 fd[i] = "".join(fd[i])
             for i in range(0,len(fd)+1):
                 self.cursor.execute("""INSERT INTO Variable (name,type,number,max_value,min_value,model_id) VALUES ('{}','registers','{}','10000','0','{}')""".format(fd[i],i*2,model_id))
@@ -270,13 +270,13 @@ class Model(object):
                 gd[i]=list(gd[i])
                 for j in range(0,len(gd[i])):
                     if gd[i][j] == '\n':
-                        gd[i][j] = '' 
+                        gd[i][j] = ''
                 gd[i] = "".join(gd[i])
             res_id = self.cursor.execute(""" SELECT id FROM Variable ORDER BY id DESC LIMIT 1""")
             for row in res_id:
                 id = row['id']
             for i in range(0,len(gd)):
-                self.cursor.execute("""INSERT INTO Variable (id,name,type,number,max_value,min_value,model_id) VALUES ('{}','{}','bits','{}','1','0','{}')""".format(id+i+1,gd[i],i,model_id))   
+                self.cursor.execute("""INSERT INTO Variable (id,name,type,number,max_value,min_value,model_id) VALUES ('{}','{}','bits','{}','1','0','{}')""".format(id+i+1,gd[i],i,model_id))
         if model_id == 2:
             f = open('simintech/model/modbus_signal/txt/variables.csv')
             f = f.readlines()
@@ -284,7 +284,7 @@ class Model(object):
             f=list(f)
             for i in range(0,len(f)):
                 if  f[i] == '\n':
-                    f[i] = '' 
+                    f[i] = ''
             f = "".join(f)
             f = f.split(';')
             size=int(len(f)/6)
@@ -296,9 +296,9 @@ class Model(object):
             min_value = f[size*5: size*6]
             for i in range(size):
                 self.cursor.execute("""INSERT INTO Variable (name,type,number,max_value,min_value,model_id,number_slave) VALUES ('{}','{}','{}','{}','{}','{}','{}')""".format(name[i],type[i],number[i],max_value[i],min_value[i],model_id,number_slave[i]))
-            			
-	
-    
+
+
+
     def variable(self):
         res_bits1 = self.cursor.execute(""" SELECT number FROM Variable WHERE number_slave = 2 ORDER BY id DESC LIMIT 1""")
         res_bits2 = self.cursor.execute(""" SELECT number FROM Variable WHERE number_slave = 3 ORDER BY id DESC LIMIT 1""")
@@ -316,7 +316,7 @@ class Model(object):
         id_vals=id_next-size_bits
         res_vals = self.cursor.execute(""" SELECT number FROM Variable WHERE id = {}""".format(id_vals))
         for row in res_vals:
-            size_vals = row['number']        
+            size_vals = row['number']
         size_vals = int((size_vals+2)/2)
         funct = pd.read_sql("""SELECT * FROM Variable ORDER BY id DESC LIMIT {}""".format(size_bits+size_vals),self.conn)
         funct_name = funct['name'].values
@@ -325,9 +325,9 @@ class Model(object):
         for i in range(len(funct_name)):
             string += funct_name[i] + ','
         for i in range(len(funct_id)):
-            string += '{}'.format(funct_id[i]) + ',' 
+            string += '{}'.format(funct_id[i]) + ','
         return string
-		
+
     def measurement_signals(self,id):
         res_id = self.cursor.execute(""" SELECT id FROM Achive ORDER BY id DESC LIMIT 1""")
         for row in res_id:
@@ -338,28 +338,28 @@ class Model(object):
         if type_ == 'bits':
             funct = pd.read_sql("SELECT * from Signals WHERE variable_id = {} and achive_id = {}".format(id,achive_id),self.conn)
         elif type_ == 'registers':
-            funct = pd.read_sql("SELECT * from Measurement WHERE variable_id = {} and achive_id = {}".format(id,achive_id),self.conn) 
+            funct = pd.read_sql("SELECT * from Measurement WHERE variable_id = {} and achive_id = {}".format(id,achive_id),self.conn)
         funct_time = funct['time'].values
         funct_value = funct['value'].values
-        
+
         first = pd.Timestamp(funct_time[0]).to_pydatetime()
         string = ''
         for i in range(0,len(funct_time)):
             current = pd.Timestamp(funct_time[i]).to_pydatetime()
             string += str(current-first)+','
         for i in range(len(funct_value)):
-            string += '{}'.format(funct_value[i]) + ',' 
+            string += '{}'.format(funct_value[i]) + ','
         return string
-		
-	    
-		
- 
-        
-		
 
-	
-	
-		
+
+
+
+
+
+
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

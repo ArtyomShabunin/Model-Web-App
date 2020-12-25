@@ -25,17 +25,22 @@ import numpy as np
 
 class Simulation():
 
-    def __init__(self, model_filename:str):
-        self.model_filename = model_filename
+    def __init__(self):
+
         self.SIT_start_pattern = r'c:\SimInTech64\bin\mmain.exe  "..\simintech\modbus_control\modbus_control.prt" /setparameter COMMAND_file_name {} /nomainform /hide /run'
 
-        #Подключение к Modbus
+        # Настройки Modbus
         self.modbus_host = "127.0.0.1"
         self.modbus_control_port = 1502
         self.modbus_model_port = 1503
-        # self.master_control = modbus_tcp.TcpMaster(host='localhost',port=1502)
 
-    def model_initialisation(self):
+        # Подключение к базе данных
+        self.conn = create_engine('postgresql://postgres:postgres@127.0.0.1:6543/variable')
+        self.cursor = self.conn.connect()
+
+    def model_initialisation(self, model_name:str):
+
+        self.model_filename = model_filename
 		# Запуск SimInTech
         self.model_process = Popen(self.SIT_start_pattern.format(self.model_filename), stdout=PIPE, shell=True)
         # Выдержка времени
