@@ -9,12 +9,13 @@ class Model(db.Model):
     name = db.Column(db.String(50), index = True, unique = True)
     description = db.Column(db.String(200),index = True, unique = True)
     filename = db.Column(db.String(200),index = True, unique = True)
-    variables = db.relationship('Variable', backref = 'Model', lazy = 'dynamic')
+    measurement_variables = db.relationship('Measurementvariable', backref = 'Model', lazy = 'dynamic')
+    signal_variables = db.relationship('Signalvariable', backref = 'Model', lazy = 'dynamic')
     achives = db.relationship('Achive', backref = 'Model', lazy = 'dynamic')
     def __repr__(self):
         return '<Modelselection-{}>'.format(self.name)
 
-class Variable(db.Model):
+class Measurementvariable(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(50), index = True, unique = False)
     register_number = db.Column(db.Integer)
@@ -26,16 +27,35 @@ class Variable(db.Model):
     def __repr__(self):
         return '<Variable - {}>'.format(self.name)
 
+class Signalvariable(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(50), index = True, unique = False)
+    register_number = db.Column(db.Integer)
+    modbus_unit = db.Column(db.Integer)
+    measurements = db.relationship('Signal', backref = 'Variable', lazy = 'dynamic')
+    model_id = db.Column(db.Integer, db.ForeignKey('model.id'))
+    def __repr__(self):
+        return '<Variable - {}>'.format(self.name)
+
 class Measurement(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     time = db.Column(db.DateTime, index = True, default = datetime.utcnow)
     value = db.Column(db.Float)
     achive_id = db.Column(db.Integer, db.ForeignKey('achive.id'))
-    variable_id = db.Column(db.Integer, db.ForeignKey('variable.id'))
+    variable_id = db.Column(db.Integer, db.ForeignKey('measurementvariable.id'))
+
+class Signal(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    time = db.Column(db.DateTime, index = True, default = datetime.utcnow)
+    value = db.Column(db.Integer)
+    achive_id = db.Column(db.Integer, db.ForeignKey('achive.id'))
+    variable_id = db.Column(db.Integer, db.ForeignKey('signalvariable.id'))
 
 class Achive(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     datetime = db.Column(db.DateTime, index = True, default = datetime.utcnow)
     measurements = db.relationship('Measurement', backref='Achive', lazy='dynamic')
+    signals = db.relationship('Signal', backref='Achive', lazy='dynamic')
+    model_id = db.Column(db.Integer, db.ForeignKey('model.id'))
     def __repr__(self):
         return '<Achive id {} of task id {}>'.format(self.id, self.task_id)

@@ -15,13 +15,34 @@
 # from pymodbus.client.sync import ModbusTcpClient
 
 import os
+import csv
 from subprocess import Popen, PIPE
 import asyncio
 from pymodbus.client.asynchronous.tcp import AsyncModbusTCPClient as ModbusClient
 from pymodbus.client.asynchronous import schedulers
 import numpy as np
 
+from app import app, db
+from app.models import *
 # from datetime import timedelta
+
+csv_file = r"..\simintech\model\modbus_signal\variables.csv"
+script_dir = os.path.dirname(__file__)
+
+def add_variables(csv_file, model_id):
+    abs_file_path = os.path.join(script_dir, csv_file)
+    f = open(abs_file_path)
+    reader = csv.reader(f)
+    for name, modbus_unit, register_nmb in reader:
+        if (int(modbus_unit) == 1) or (int(modbus_unit) == 4):
+            u = Measurementvariable(name=name, register_number=register_nmb, modbus_unit=modbus_unit, model_id=model_id)
+        else:
+            u = Signalvariable(name=name, register_number=register_nmb, modbus_unit=modbus_unit, model_id=model_id)
+
+        db.session.add(u)
+    db.session.commit()
+
+
 
 class Simulation():
 
