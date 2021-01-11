@@ -13,7 +13,7 @@ class Model(db.Model):
     signal_variables = db.relationship('Signalvariable', backref = 'Model', lazy = 'dynamic')
     achives = db.relationship('Achive', backref = 'Model', lazy = 'dynamic')
     def __repr__(self):
-        return '<Modelselection-{}>'.format(self.name)
+        return '<Model-{}>'.format(self.name)
 
 class Measurementvariable(db.Model):
     id = db.Column(db.Integer, primary_key = True)

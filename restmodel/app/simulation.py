@@ -11,7 +11,7 @@
 # import numpy as np
 # import subprocess
 # import datetime
-# from sqlalchemy import create_engine
+from sqlalchemy import create_engine
 # from pymodbus.client.sync import ModbusTcpClient
 
 import os
@@ -48,7 +48,7 @@ class Simulation():
 
     def __init__(self):
 
-        self.SIT_start_pattern = r'c:\SimInTech64\bin\mmain.exe  "..\simintech\modbus_control\modbus_control.prt" /setparameter COMMAND_file_name {} /nomainform /hide /run'
+        self.SIT_start_pattern = r'c:\SimInTech64\bin\mmain.exe  ".\simintech\modbus_control\modbus_control.prt" /setparameter COMMAND_file_name {} /nomainform /hide /run'
 
         # Настройки Modbus
         self.modbus_host = "127.0.0.1"
@@ -61,7 +61,11 @@ class Simulation():
 
     def model_initialisation(self, model_name:str):
 
-        self.model_filename = model_filename
+        self.model_filename = Model.query.filter_by(name=model_name).first().filename
+        model_id = Model.query.filter_by(name=model_name).first().id
+
+        self.measurements_count_1 = Measurementvariable.query.filter_by(model_id=model_id).filter_by(modbus_unit=1).count()
+        self.signals_count = Measurementvariable.query.filter_by(model_id=model_id).count()
 		# Запуск SimInTech
         self.model_process = Popen(self.SIT_start_pattern.format(self.model_filename), stdout=PIPE, shell=True)
         # Выдержка времени
@@ -95,8 +99,7 @@ class Simulation():
 
     async def start_async_test(self, client):
 
-        reg_count = 4714
-        reg_count = 125
+        reg_count = self.measurements_count_1 * 2
         bit_count = 5475
         max_reg = 125
         max_bit = 2000
@@ -132,5 +135,5 @@ class Simulation():
 
 if __name__ == '__main__':
     file_name = r"..\..\simintech\model\pac\boiler_model_auxsteam.pak"
-    sim = Simulation(file_name)
-    sim.model_initialisation()
+    sim = Simulation()
+    sim.model_initialisation('boiler_model')
