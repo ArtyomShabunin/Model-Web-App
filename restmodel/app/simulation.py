@@ -11,7 +11,7 @@
 # import numpy as np
 # import subprocess
 # import datetime
-from sqlalchemy import create_engine
+# from sqlalchemy import create_engine
 # from pymodbus.client.sync import ModbusTcpClient
 
 import os
@@ -50,12 +50,23 @@ class Simulation():
 
         self.SIT_start_pattern = r'c:\SimInTech64\bin\mmain.exe  ".\simintech\modbus_control\modbus_control.prt" /setparameter COMMAND_file_name {} /nomainform /hide /run'
 
+        self.simulation = {}
+
+        self.simulation['status'] = "SimInTech is not running"
+        self.simulation['model'] = {}
+        self.simulation['model']['name'] = ""
+        self.simulation['model']['status'] = ""
+
         # Настройки Modbus
         self.modbus_host = "127.0.0.1"
         self.modbus_control_port = 1502
         self.modbus_model_port = 1503
 
-    def model_initialisation(self, model_name:str):
+    async def start_SIT(self, model_name:str):
+
+        self.simulation['status'] = "SimInTech starts..."
+        self.simulation['model']['name'] = model_name
+
 
         self.model_filename = Model.query.filter_by(name=model_name).first().filename
         model_id = Model.query.filter_by(name=model_name).first().id
@@ -74,13 +85,16 @@ class Simulation():
 
         # Запуск SimInTech
         self.model_process = Popen(self.SIT_start_pattern.format(self.model_filename), stdout=PIPE, shell=True)
-        # Выдержка времени!!!!!!!!!!!!!!!
-        self.model_initialised = True
+        await asyncio.sleep(40)
+        self.simulation['status'] = "SimInTech started"
 
-    def kill_model(self):
+
+    def kill_SIT(self):
         p = Popen("TASKKILL /F /PID {pid} /T".format(pid=self.model_process.pid))
 
-        self.model_initialised = False
+        self.simulation['status'] = "SimInTech is not running"
+        self.simulation['model']['name'] = ""
+        self.simulation['model']['status'] = ""
 
     def restart_model(self):
         pass
@@ -103,37 +117,44 @@ class Simulation():
     def connect_to_model_modbus(self):
         pass
 
+    async def reading_model_status(self, client):
+        while True:
+            rr = await client.read_coils(0, 8, unit=1)
+            print(f"Статус {rr.bits}")
+            await asyncio.sleep(1)
+
+
     async def reading_data(self, client):
         max_reg = 125 # максимально число считываемых за раз регистров
         max_bit = 2000
 
-        reading_measurements_reg = []
-        reading_signals_reg = []
+        reading_reg = []
+        reading_bit = []
 
-        meas_reg_count = self.measurements_count * 2
-        signals_reg_count = self.signals_count
-        signals_reg_count = 3000
+        reg_count = self.measurements_count * 2
+        bit_count = self.signals_count
+        bit_count = 3000
 
         # meas_reg_count = 100
         # signals_reg_count = 200
 
-        for start in range(0,meas_reg_count,max_reg):
-            number = min(meas_reg_count-start, max_reg)
+        for start in range(0,reg_count,max_reg):
+            number = min(reg_count-start, max_reg)
             rr = await client.read_holding_registers(start, number, unit=1)
-            reading_measurements_reg += rr.registers
+            reading_reg += rr.registers
 
-        for start in range(0,signals_reg_count,max_bit):
-            number = min(signals_reg_count-start, max_bit)
+        for start in range(0,bit_count,max_bit):
+            number = min(bit_count-start, max_bit)
             rr = await client.read_coils(start, number, unit=1)
             print("start {}".format(start))
-            reading_signals_reg += rr.bits
+            reading_bit += rr.bits
             print("норм")
 
-        self.reading_measurements = np.array(reading_measurements_reg, dtype=np.int16).view(dtype = np.float32)
+        self.reading_measurements = np.array(reading_reg, dtype=np.int16).view(dtype = np.float32)
 
-        print(reading_measurements_reg[0:10])
-        print(reading_signals_reg[0:10])
-        self.reading_signals = reading_signals_reg
+        print(reading_reg[0:10])
+        print(reading_bit[0:10])
+        self.reading_signals = reading_bit
 
 
 
