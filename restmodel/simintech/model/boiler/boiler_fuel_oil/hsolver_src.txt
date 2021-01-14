@@ -619,7 +619,8 @@ SetMainParameters(
 "sparce_marc",
 0,
 1,
-2000
+2000,
+0
 );
 
 //Баки и компенсаторы
@@ -1639,7 +1640,7 @@ BoundNode_2=CreateBoundNode(
 0.1,
 0.1,
 19,
-99643.9244679814,
+100108.134239307,
 120000,
 100,
 1,
@@ -1661,7 +1662,7 @@ BoundNode_3=CreateBoundNode(
 0.1,
 0.1,
 16,
-99643.9244679814,
+100108.134239307,
 120000,
 100,
 1,
@@ -1712,7 +1713,9 @@ Channel_4=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 Channel_3=CreateChannel(
@@ -1746,7 +1749,9 @@ Channel_3=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 Channel_2=CreateChannel(
@@ -1780,7 +1785,9 @@ Channel_2=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 Tube_1=CreateTube(
@@ -1901,7 +1908,9 @@ HSSubModel1.Channel_1=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSSubModel1.Channel_2=CreateChannel(
@@ -1935,7 +1944,9 @@ HSSubModel1.Channel_2=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSSubModel1.Channel_3=CreateChannel(
@@ -1969,7 +1980,9 @@ HSSubModel1.Channel_3=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 Tube_11=CreateTube(
@@ -2061,7 +2074,9 @@ HSSubModel2.Channel_2=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 Tube_13=CreateTube(
@@ -3893,7 +3908,9 @@ Channel_1=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 //Рёбра теплогидравлической схемы
@@ -5433,7 +5450,7 @@ HSSubModel2.Channel_2,
 [1 , 2 , 3],
 [1 , 2 , 3],
 [10000 , 10000 , 10000],
-[9497.50599690673 , 9286.55296559397 , 9271.8000544858]
+[-5.49378274121413 , -5.49378285715371 , -5.49378297331498]
 );
 
 //Тепловые структуры с тепловым излучением

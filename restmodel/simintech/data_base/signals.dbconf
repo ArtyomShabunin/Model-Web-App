@@ -18,7 +18,7 @@
  <sigcapfiltervals>'*'#13#10</sigcapfiltervals>
  <sigcapfiltertext>'По умолчанию (*)'</sigcapfiltertext>
  <sigcapfilteritemidx>'0'</sigcapfilteritemidx>
- <groupfilterdatanameitems></groupfilterdatanameitems>
+ <groupfilterdatanameitems>'80lbs'#13#10</groupfilterdatanameitems>
  <groupfilterdataname></groupfilterdataname>
  <groupfilterdatavalueitems></groupfilterdatavalueitems>
  <groupfilterdatavalue>'*'</groupfilterdatavalue>
@@ -50,7 +50,7 @@
  <catsortcolumn>'-1'</catsortcolumn>
  <catsortdirection>'0'</catsortdirection>
  <groupsortcolumn>'-1'</groupsortcolumn>
- <groupsortdirection>'0'</groupsortdirection>
+ <groupsortdirection>'1'</groupsortdirection>
  <listsaddoperation>'0'</listsaddoperation>
  <sigsortcolumn>'-1'</sigsortcolumn>
  <sigsortdirection>'0'</sigsortdirection>
@@ -86,10 +86,10 @@
   <sigsortcol>'-1'</sigsortcol>
   <sigsortdir>'0'</sigsortdir>
  </globfilter>
- <formleft>'143'</formleft>
- <formtop>'108'</formtop>
- <formright>'1449'</formright>
- <formbottom>'820'</formbottom>
+ <formleft>'0'</formleft>
+ <formtop>'77'</formtop>
+ <formright>'1280'</formright>
+ <formbottom>'760'</formbottom>
  <formstate>'0'</formstate>
  <formactivemainpage>'0'</formactivemainpage>
  <formactivepage>'0'</formactivepage>

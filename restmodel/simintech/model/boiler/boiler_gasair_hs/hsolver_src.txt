@@ -40,7 +40,8 @@ SetMainParameters(
 "sparce_marc",
 0,
 1,
-2000
+2000,
+0
 );
 
 //Баки и компенсаторы
@@ -1529,7 +1530,7 @@ HSList1.BoundNode_1=CreateBoundNode(
 0.1,
 0.1,
 0,
-99675.8188449786,
+100108.134239307,
 120000,
 100,
 1,
@@ -1573,7 +1574,7 @@ HSList2.BoundNode_4=CreateBoundNode(
 0.1,
 0.1,
 0,
-99675.8188449786,
+100108.134239307,
 120000,
 20,
 1,
@@ -1617,7 +1618,7 @@ HSList2.BoundNode_6=CreateBoundNode(
 0.1,
 0.1,
 0,
-99675.8188449786,
+100108.134239307,
 120000,
 20,
 1,
@@ -1639,7 +1640,7 @@ HSList2.BoundNode_7=CreateBoundNode(
 0.1,
 0.1,
 0,
-99675.8188449786,
+100108.134239307,
 120000,
 20,
 1,
@@ -1683,7 +1684,7 @@ HSList3.BoundNode_4=CreateBoundNode(
 0.1,
 0.1,
 0,
-99675.8188449786,
+100108.134239307,
 120000,
 20,
 1,
@@ -1726,9 +1727,9 @@ HSList3.BoundNode_5=CreateBoundNode(
 HSList1.InputFlow_1=CreateFlowSource(
 "HSList1.InputFlow_1",
 HSList1.Node_1,
-80.4002215107175,
+0.000219278281615789,
 200000,
-99.9999999999893,
+100.000000000003,
 1,
 [],
 10000000
@@ -1768,7 +1769,9 @@ HSList1.Channel_1=CreateChannel(
 0,
 [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+[0 , 0 , 0 , 0 , 0 , 0 , 0 , 0]
 );
 
 HSList1.Channel_2=CreateChannel(
@@ -1802,7 +1805,9 @@ HSList1.Channel_2=CreateChannel(
 0,
 [0 , 0 , 0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0 , 0 , 0],
+[0 , 0 , 0 , 0 , 0]
 );
 
 HSList1.Channel_3=CreateChannel(
@@ -1836,7 +1841,9 @@ HSList1.Channel_3=CreateChannel(
 0,
 [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+[0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0]
 );
 
 HSList1.Channel_4=CreateChannel(
@@ -1870,7 +1877,9 @@ HSList1.Channel_4=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList1.Channel_5=CreateChannel(
@@ -1904,7 +1913,9 @@ HSList1.Channel_5=CreateChannel(
 0,
 [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+[0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0]
 );
 
 HSList1.Channel_6=CreateChannel(
@@ -1938,7 +1949,9 @@ HSList1.Channel_6=CreateChannel(
 0,
 [0 , 0 , 0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0 , 0 , 0],
+[0 , 0 , 0 , 0 , 0]
 );
 
 HSList1.Channel_7=CreateChannel(
@@ -1972,7 +1985,9 @@ HSList1.Channel_7=CreateChannel(
 0,
 [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+[0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0]
 );
 
 HSList1.Channel_8=CreateChannel(
@@ -2006,7 +2021,9 @@ HSList1.Channel_8=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList1.Channel_9=CreateChannel(
@@ -2040,7 +2057,9 @@ HSList1.Channel_9=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList1.Channel_10=CreateChannel(
@@ -2074,7 +2093,9 @@ HSList1.Channel_10=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList1.Channel_11=CreateChannel(
@@ -2108,7 +2129,9 @@ HSList1.Channel_11=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList1.Channel_12=CreateChannel(
@@ -2142,7 +2165,9 @@ HSList1.Channel_12=CreateChannel(
 0,
 [0 , 0 , 0 , 0 , 0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0 , 0 , 0 , 0 , 0],
+[0 , 0 , 0 , 0 , 0 , 0 , 0]
 );
 
 HSList1.Channel_13=CreateChannel(
@@ -2176,7 +2201,9 @@ HSList1.Channel_13=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList1.Channel_14=CreateChannel(
@@ -2210,7 +2237,9 @@ HSList1.Channel_14=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList1.Channel_15=CreateChannel(
@@ -2244,7 +2273,9 @@ HSList1.Channel_15=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList1.Channel_16=CreateChannel(
@@ -2278,7 +2309,9 @@ HSList1.Channel_16=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList1.Channel_17=CreateChannel(
@@ -2312,7 +2345,9 @@ HSList1.Channel_17=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList1.Channel_18=CreateChannel(
@@ -2346,7 +2381,9 @@ HSList1.Channel_18=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList1.Channel_19=CreateChannel(
@@ -2380,7 +2417,9 @@ HSList1.Channel_19=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList1.Channel_20=CreateChannel(
@@ -2414,7 +2453,9 @@ HSList1.Channel_20=CreateChannel(
 0,
 [0 , 0 , 0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0 , 0 , 0],
+[0 , 0 , 0 , 0 , 0]
 );
 
 HSList1.Channel_21=CreateChannel(
@@ -2448,7 +2489,9 @@ HSList1.Channel_21=CreateChannel(
 0,
 [0 , 0 , 0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0 , 0 , 0],
+[0 , 0 , 0 , 0 , 0]
 );
 
 HSList1.Channel_22=CreateChannel(
@@ -2482,7 +2525,9 @@ HSList1.Channel_22=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList1.Channel_23=CreateChannel(
@@ -2516,7 +2561,9 @@ HSList1.Channel_23=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList1.Channel_24=CreateChannel(
@@ -2550,7 +2597,9 @@ HSList1.Channel_24=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList1.Channel_25=CreateChannel(
@@ -2584,7 +2633,9 @@ HSList1.Channel_25=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList1.Channel_26=CreateChannel(
@@ -2618,7 +2669,9 @@ HSList1.Channel_26=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList2.Channel_32=CreateChannel(
@@ -2652,7 +2705,9 @@ HSList2.Channel_32=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_33=CreateChannel(
@@ -2686,7 +2741,9 @@ HSList2.Channel_33=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList2.Channel_34=CreateChannel(
@@ -2720,7 +2777,9 @@ HSList2.Channel_34=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList2.Channel_35=CreateChannel(
@@ -2754,7 +2813,9 @@ HSList2.Channel_35=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_36=CreateChannel(
@@ -2788,7 +2849,9 @@ HSList2.Channel_36=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_37=CreateChannel(
@@ -2822,7 +2885,9 @@ HSList2.Channel_37=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_39=CreateChannel(
@@ -2856,7 +2921,9 @@ HSList2.Channel_39=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_40=CreateChannel(
@@ -2890,7 +2957,9 @@ HSList2.Channel_40=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_41=CreateChannel(
@@ -2924,7 +2993,9 @@ HSList2.Channel_41=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_42=CreateChannel(
@@ -2958,7 +3029,9 @@ HSList2.Channel_42=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_43=CreateChannel(
@@ -2992,7 +3065,9 @@ HSList2.Channel_43=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_44=CreateChannel(
@@ -3026,7 +3101,9 @@ HSList2.Channel_44=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_45=CreateChannel(
@@ -3060,7 +3137,9 @@ HSList2.Channel_45=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_46=CreateChannel(
@@ -3094,7 +3173,9 @@ HSList2.Channel_46=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_47=CreateChannel(
@@ -3128,7 +3209,9 @@ HSList2.Channel_47=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_48=CreateChannel(
@@ -3162,7 +3245,9 @@ HSList2.Channel_48=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList2.Channel_49=CreateChannel(
@@ -3196,7 +3281,9 @@ HSList2.Channel_49=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList2.RVP1_air2.Channel_1=CreateChannel(
@@ -3230,7 +3317,9 @@ HSList2.RVP1_air2.Channel_1=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.RVP2_air2.Channel_1=CreateChannel(
@@ -3264,7 +3353,9 @@ HSList2.RVP2_air2.Channel_1=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_50=CreateChannel(
@@ -3298,7 +3389,9 @@ HSList2.Channel_50=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_51=CreateChannel(
@@ -3332,7 +3425,9 @@ HSList2.Channel_51=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_52=CreateChannel(
@@ -3366,7 +3461,9 @@ HSList2.Channel_52=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_53=CreateChannel(
@@ -3400,7 +3497,9 @@ HSList2.Channel_53=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_54=CreateChannel(
@@ -3434,7 +3533,9 @@ HSList2.Channel_54=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_55=CreateChannel(
@@ -3468,7 +3569,9 @@ HSList2.Channel_55=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_56=CreateChannel(
@@ -3502,7 +3605,9 @@ HSList2.Channel_56=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_57=CreateChannel(
@@ -3536,7 +3641,9 @@ HSList2.Channel_57=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_58=CreateChannel(
@@ -3570,7 +3677,9 @@ HSList2.Channel_58=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_59=CreateChannel(
@@ -3604,7 +3713,9 @@ HSList2.Channel_59=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_60=CreateChannel(
@@ -3638,7 +3749,9 @@ HSList2.Channel_60=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList2.Channel_61=CreateChannel(
@@ -3672,7 +3785,9 @@ HSList2.Channel_61=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList2.Channel_63=CreateChannel(
@@ -3706,7 +3821,9 @@ HSList2.Channel_63=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_64=CreateChannel(
@@ -3740,7 +3857,9 @@ HSList2.Channel_64=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_65=CreateChannel(
@@ -3774,7 +3893,9 @@ HSList2.Channel_65=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_66=CreateChannel(
@@ -3808,7 +3929,9 @@ HSList2.Channel_66=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_67=CreateChannel(
@@ -3842,7 +3965,9 @@ HSList2.Channel_67=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_68=CreateChannel(
@@ -3876,7 +4001,9 @@ HSList2.Channel_68=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_69=CreateChannel(
@@ -3910,7 +4037,9 @@ HSList2.Channel_69=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_70=CreateChannel(
@@ -3944,7 +4073,9 @@ HSList2.Channel_70=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_71=CreateChannel(
@@ -3978,7 +4109,9 @@ HSList2.Channel_71=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_72=CreateChannel(
@@ -4012,7 +4145,9 @@ HSList2.Channel_72=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_73=CreateChannel(
@@ -4046,7 +4181,9 @@ HSList2.Channel_73=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_74=CreateChannel(
@@ -4080,7 +4217,9 @@ HSList2.Channel_74=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.HSSubModel3.Channel_1=CreateChannel(
@@ -4114,7 +4253,9 @@ HSList2.HSSubModel3.Channel_1=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.HSSubModel4.Channel_1=CreateChannel(
@@ -4148,7 +4289,9 @@ HSList2.HSSubModel4.Channel_1=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_76=CreateChannel(
@@ -4182,7 +4325,9 @@ HSList2.Channel_76=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_77=CreateChannel(
@@ -4216,7 +4361,9 @@ HSList2.Channel_77=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_78=CreateChannel(
@@ -4250,7 +4397,9 @@ HSList2.Channel_78=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_79=CreateChannel(
@@ -4284,7 +4433,9 @@ HSList2.Channel_79=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_80=CreateChannel(
@@ -4318,7 +4469,9 @@ HSList2.Channel_80=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_82=CreateChannel(
@@ -4352,7 +4505,9 @@ HSList2.Channel_82=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_83=CreateChannel(
@@ -4386,7 +4541,9 @@ HSList2.Channel_83=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_84=CreateChannel(
@@ -4420,7 +4577,9 @@ HSList2.Channel_84=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_85=CreateChannel(
@@ -4454,7 +4613,9 @@ HSList2.Channel_85=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_86=CreateChannel(
@@ -4488,7 +4649,9 @@ HSList2.Channel_86=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_87=CreateChannel(
@@ -4522,7 +4685,9 @@ HSList2.Channel_87=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_88=CreateChannel(
@@ -4556,7 +4721,9 @@ HSList2.Channel_88=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_89=CreateChannel(
@@ -4590,7 +4757,9 @@ HSList2.Channel_89=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_90=CreateChannel(
@@ -4624,7 +4793,9 @@ HSList2.Channel_90=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_91=CreateChannel(
@@ -4658,7 +4829,9 @@ HSList2.Channel_91=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_92=CreateChannel(
@@ -4692,7 +4865,9 @@ HSList2.Channel_92=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_93=CreateChannel(
@@ -4726,7 +4901,9 @@ HSList2.Channel_93=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_94=CreateChannel(
@@ -4760,7 +4937,9 @@ HSList2.Channel_94=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_95=CreateChannel(
@@ -4794,7 +4973,9 @@ HSList2.Channel_95=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_96=CreateChannel(
@@ -4828,7 +5009,9 @@ HSList2.Channel_96=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_97=CreateChannel(
@@ -4862,7 +5045,9 @@ HSList2.Channel_97=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_98=CreateChannel(
@@ -4896,7 +5081,9 @@ HSList2.Channel_98=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_99=CreateChannel(
@@ -4930,7 +5117,9 @@ HSList2.Channel_99=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_100=CreateChannel(
@@ -4964,7 +5153,9 @@ HSList2.Channel_100=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_101=CreateChannel(
@@ -4998,7 +5189,9 @@ HSList2.Channel_101=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_102=CreateChannel(
@@ -5032,7 +5225,9 @@ HSList2.Channel_102=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_103=CreateChannel(
@@ -5066,7 +5261,9 @@ HSList2.Channel_103=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_104=CreateChannel(
@@ -5100,7 +5297,9 @@ HSList2.Channel_104=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_105=CreateChannel(
@@ -5134,7 +5333,9 @@ HSList2.Channel_105=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_106=CreateChannel(
@@ -5168,7 +5369,9 @@ HSList2.Channel_106=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_107=CreateChannel(
@@ -5202,7 +5405,9 @@ HSList2.Channel_107=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_108=CreateChannel(
@@ -5236,7 +5441,9 @@ HSList2.Channel_108=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_109=CreateChannel(
@@ -5270,7 +5477,9 @@ HSList2.Channel_109=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_110=CreateChannel(
@@ -5304,7 +5513,9 @@ HSList2.Channel_110=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_112=CreateChannel(
@@ -5338,7 +5549,9 @@ HSList2.Channel_112=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_113=CreateChannel(
@@ -5372,7 +5585,9 @@ HSList2.Channel_113=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_114=CreateChannel(
@@ -5406,7 +5621,9 @@ HSList2.Channel_114=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_115=CreateChannel(
@@ -5440,7 +5657,9 @@ HSList2.Channel_115=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_116=CreateChannel(
@@ -5474,7 +5693,9 @@ HSList2.Channel_116=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList2.Channel_118=CreateChannel(
@@ -5508,7 +5729,9 @@ HSList2.Channel_118=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_119=CreateChannel(
@@ -5542,7 +5765,9 @@ HSList2.Channel_119=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_120=CreateChannel(
@@ -5576,7 +5801,9 @@ HSList2.Channel_120=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList2.Channel_121=CreateChannel(
@@ -5610,7 +5837,9 @@ HSList2.Channel_121=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList3.Channel_16=CreateChannel(
@@ -5644,7 +5873,9 @@ HSList3.Channel_16=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.Channel_17=CreateChannel(
@@ -5678,7 +5909,9 @@ HSList3.Channel_17=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList3.Channel_18=CreateChannel(
@@ -5712,7 +5945,9 @@ HSList3.Channel_18=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.Channel_19=CreateChannel(
@@ -5746,7 +5981,9 @@ HSList3.Channel_19=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList3.Channel_20=CreateChannel(
@@ -5780,7 +6017,9 @@ HSList3.Channel_20=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.Channel_21=CreateChannel(
@@ -5814,7 +6053,9 @@ HSList3.Channel_21=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.Channel_22=CreateChannel(
@@ -5848,7 +6089,9 @@ HSList3.Channel_22=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.Channel_23=CreateChannel(
@@ -5882,7 +6125,9 @@ HSList3.Channel_23=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.Channel_24=CreateChannel(
@@ -5916,7 +6161,9 @@ HSList3.Channel_24=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.RVP1_air1.Channel_1=CreateChannel(
@@ -5950,7 +6197,9 @@ HSList3.RVP1_air1.Channel_1=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList3.Channel_25=CreateChannel(
@@ -5984,7 +6233,9 @@ HSList3.Channel_25=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.Channel_26=CreateChannel(
@@ -6018,7 +6269,9 @@ HSList3.Channel_26=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.Channel_27=CreateChannel(
@@ -6052,7 +6305,9 @@ HSList3.Channel_27=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.Channel_28=CreateChannel(
@@ -6086,7 +6341,9 @@ HSList3.Channel_28=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.Channel_29=CreateChannel(
@@ -6120,7 +6377,9 @@ HSList3.Channel_29=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.Channel_30=CreateChannel(
@@ -6154,7 +6413,9 @@ HSList3.Channel_30=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.Channel_31=CreateChannel(
@@ -6188,7 +6449,9 @@ HSList3.Channel_31=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList3.Channel_32=CreateChannel(
@@ -6222,7 +6485,9 @@ HSList3.Channel_32=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.Channel_33=CreateChannel(
@@ -6256,7 +6521,9 @@ HSList3.Channel_33=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList3.Channel_34=CreateChannel(
@@ -6290,7 +6557,9 @@ HSList3.Channel_34=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList3.Channel_35=CreateChannel(
@@ -6324,7 +6593,9 @@ HSList3.Channel_35=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList3.Channel_36=CreateChannel(
@@ -6358,7 +6629,9 @@ HSList3.Channel_36=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList3.Channel_37=CreateChannel(
@@ -6392,7 +6665,9 @@ HSList3.Channel_37=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList3.Channel_38=CreateChannel(
@@ -6426,7 +6701,9 @@ HSList3.Channel_38=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList3.Channel_39=CreateChannel(
@@ -6460,7 +6737,9 @@ HSList3.Channel_39=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList3.Channel_40=CreateChannel(
@@ -6494,7 +6773,9 @@ HSList3.Channel_40=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList3.Channel_41=CreateChannel(
@@ -6528,7 +6809,9 @@ HSList3.Channel_41=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList3.Channel_42=CreateChannel(
@@ -6562,7 +6845,9 @@ HSList3.Channel_42=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList3.Channel_43=CreateChannel(
@@ -6596,7 +6881,9 @@ HSList3.Channel_43=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList3.Channel_44=CreateChannel(
@@ -6630,7 +6917,9 @@ HSList3.Channel_44=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.Channel_45=CreateChannel(
@@ -6664,7 +6953,9 @@ HSList3.Channel_45=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList3.Channel_46=CreateChannel(
@@ -6698,7 +6989,9 @@ HSList3.Channel_46=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList3.Channel_47=CreateChannel(
@@ -6732,7 +7025,9 @@ HSList3.Channel_47=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList3.Channel_48=CreateChannel(
@@ -6766,7 +7061,9 @@ HSList3.Channel_48=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList3.Channel_49=CreateChannel(
@@ -6800,7 +7097,9 @@ HSList3.Channel_49=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.Channel_50=CreateChannel(
@@ -6834,7 +7133,9 @@ HSList3.Channel_50=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList3.Channel_51=CreateChannel(
@@ -6868,7 +7169,9 @@ HSList3.Channel_51=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList3.Channel_52=CreateChannel(
@@ -6902,7 +7205,9 @@ HSList3.Channel_52=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.Channel_53=CreateChannel(
@@ -6936,7 +7241,9 @@ HSList3.Channel_53=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList3.Channel_55=CreateChannel(
@@ -6970,7 +7277,9 @@ HSList3.Channel_55=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList3.Channel_56=CreateChannel(
@@ -7004,7 +7313,9 @@ HSList3.Channel_56=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList3.Channel_57=CreateChannel(
@@ -7038,7 +7349,9 @@ HSList3.Channel_57=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList3.Channel_58=CreateChannel(
@@ -7072,7 +7385,9 @@ HSList3.Channel_58=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList3.Channel_59=CreateChannel(
@@ -7106,7 +7421,9 @@ HSList3.Channel_59=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList3.Channel_60=CreateChannel(
@@ -7140,7 +7457,9 @@ HSList3.Channel_60=CreateChannel(
 0,
 [0 , 0],
 0,
-1
+1,
+[0 , 0],
+[0 , 0]
 );
 
 HSList3.RVP2_air1.Channel_1=CreateChannel(
@@ -7174,7 +7493,9 @@ HSList3.RVP2_air1.Channel_1=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList3.Channel_61=CreateChannel(
@@ -7208,7 +7529,9 @@ HSList3.Channel_61=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.Channel_62=CreateChannel(
@@ -7242,7 +7565,9 @@ HSList3.Channel_62=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.Channel_63=CreateChannel(
@@ -7276,7 +7601,9 @@ HSList3.Channel_63=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.Channel_64=CreateChannel(
@@ -7310,7 +7637,9 @@ HSList3.Channel_64=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.Channel_65=CreateChannel(
@@ -7344,7 +7673,9 @@ HSList3.Channel_65=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.Channel_66=CreateChannel(
@@ -7378,7 +7709,9 @@ HSList3.Channel_66=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.Channel_67=CreateChannel(
@@ -7412,7 +7745,9 @@ HSList3.Channel_67=CreateChannel(
 0,
 [0 , 0 , 0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0 , 0 , 0],
+[0 , 0 , 0 , 0 , 0]
 );
 
 HSList3.Channel_68=CreateChannel(
@@ -7446,7 +7781,9 @@ HSList3.Channel_68=CreateChannel(
 0,
 [0 , 0 , 0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0 , 0 , 0],
+[0 , 0 , 0 , 0 , 0]
 );
 
 HSList3.Channel_69=CreateChannel(
@@ -7480,7 +7817,9 @@ HSList3.Channel_69=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList3.Channel_70=CreateChannel(
@@ -7514,7 +7853,9 @@ HSList3.Channel_70=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList3.Channel_71=CreateChannel(
@@ -7548,7 +7889,9 @@ HSList3.Channel_71=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList3.Channel_72=CreateChannel(
@@ -7582,7 +7925,9 @@ HSList3.Channel_72=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList3.Channel_73=CreateChannel(
@@ -7616,7 +7961,9 @@ HSList3.Channel_73=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList3.Channel_74=CreateChannel(
@@ -7650,7 +7997,9 @@ HSList3.Channel_74=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList3.Channel_75=CreateChannel(
@@ -7684,7 +8033,9 @@ HSList3.Channel_75=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.Channel_76=CreateChannel(
@@ -7718,7 +8069,9 @@ HSList3.Channel_76=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.Channel_77=CreateChannel(
@@ -7752,7 +8105,9 @@ HSList3.Channel_77=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.Channel_78=CreateChannel(
@@ -7786,7 +8141,9 @@ HSList3.Channel_78=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.Channel_79=CreateChannel(
@@ -7820,7 +8177,9 @@ HSList3.Channel_79=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.Channel_80=CreateChannel(
@@ -7854,7 +8213,9 @@ HSList3.Channel_80=CreateChannel(
 0,
 [0],
 0,
-1
+1,
+[0],
+[0]
 );
 
 HSList3.HSSubModel3.Channel_1=CreateChannel(
@@ -7888,7 +8249,9 @@ HSList3.HSSubModel3.Channel_1=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 HSList3.HSSubModel4.Channel_1=CreateChannel(
@@ -7922,7 +8285,9 @@ HSList3.HSSubModel4.Channel_1=CreateChannel(
 0,
 [0 , 0 , 0],
 0,
-1
+1,
+[0 , 0 , 0],
+[0 , 0 , 0]
 );
 
 //Рёбра теплогидравлической схемы
@@ -11824,7 +12189,7 @@ HSList2.RVP1_air2.Channel_1,
 [0.785 , 0.785 , 0.785],
 [1 , 2 , 3],
 [1 , 2 , 3],
-[919.457457839508 , 189.07048327528 , 70.7343128147913],
+[165.608278590909 , 275.559685278824 , 514.818992755943],
 [10000 , 10000 , 10000]
 );
 
@@ -11839,7 +12204,7 @@ HSList2.RVP2_air2.Channel_1,
 [0.785 , 0.785 , 0.785],
 [1 , 2 , 3],
 [1 , 2 , 3],
-[919.457306920214 , 189.070437820655 , 70.7342933581534],
+[165.608298880759 , 275.559687152968 , 514.818986441199],
 [10000 , 10000 , 10000]
 );
 
@@ -11855,7 +12220,7 @@ HSList2.HSSubModel3.Channel_1,
 [1 , 2 , 3],
 [1 , 2 , 3],
 [0 , 0 , 0],
-[216.911551253197 , 214.760818924882 , 212.731631741405]
+[0 , 0 , 0]
 );
 
 HSList2.HSSubModel4.SetWallQf_1=CreateSetWallQf(
@@ -11870,7 +12235,7 @@ HSList2.HSSubModel4.Channel_1,
 [1 , 2 , 3],
 [1 , 2 , 3],
 [0 , 0 , 0],
-[216.911551253197 , 214.760818924882 , 212.731631741405]
+[0 , 0 , 0]
 );
 
 HSList3.RVP1_air1.SetWallQf_1=CreateSetWallQf(
@@ -11884,7 +12249,7 @@ HSList3.RVP1_air1.Channel_1,
 [0.785 , 0.785 , 0.785],
 [1 , 2 , 3],
 [1 , 2 , 3],
-[352.350583747899 , 96.0297656845291 , 31.592480476185],
+[1762.47388685659 , 1632.07774473225 , 1773.46248715773],
 [10000 , 10000 , 10000]
 );
 
@@ -11899,7 +12264,7 @@ HSList3.RVP2_air1.Channel_1,
 [0.785 , 0.785 , 0.785],
 [1 , 2 , 3],
 [1 , 2 , 3],
-[352.349559437236 , 96.0294501802001 , 31.5923750405601],
+[1762.47716785558 , 1632.07862363116 , 1773.46338029503],
 [10000 , 10000 , 10000]
 );
 
@@ -11915,7 +12280,7 @@ HSList3.HSSubModel3.Channel_1,
 [1 , 2 , 3],
 [1 , 2 , 3],
 [3000.07072938059 , 3000.07072938059 , 3000.07072938059],
-[632.207583779061 , 545.415903206257 , 470.740267945434]
+[0 , 0 , 0]
 );
 
 HSList3.HSSubModel4.SetWallQf_1=CreateSetWallQf(
@@ -11930,7 +12295,7 @@ HSList3.HSSubModel4.Channel_1,
 [1 , 2 , 3],
 [1 , 2 , 3],
 [3000.07072938059 , 3000.07072938059 , 3000.07072938059],
-[632.207583779061 , 545.415903206257 , 470.740267945434]
+[0 , 0 , 0]
 );
 
 //Тепловые структуры с тепловым излучением
