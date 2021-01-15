@@ -53,10 +53,17 @@ class Simulation():
         self.simulation = {}
 
         self.simulation['status'] = "SimInTech is not running"
+        self.simulation['status_update_time'] = 1
         self.simulation['model'] = {}
         self.simulation['model']['name'] = ""
         self.simulation['model']['status'] = ""
+        self.simulation['model']['signals_update_time'] = 1
 
+        self.simulation['model']['measurement_names'] = {}
+        self.simulation['model']['measurement_values'] = []
+
+        self.simulation['model']['signal_names'] = {}
+        self.simulation['model']['signal_values'] = []
         # Настройки Modbus
         self.modbus_host = "127.0.0.1"
         self.modbus_control_port = 1502
@@ -73,12 +80,14 @@ class Simulation():
 
         # Число измерений
         self.measurements_count = Measurementvariable.query.filter_by(model_id=model_id).count()
+        # Перечень измерений
+        self.simulation['model']['measurement_names'] = {i.name:i.register_number for i in Measurementvariable.query.filter_by(model_id=model_id).all()}
+
         # Число сигналов для чтения (статус задвижек, механизмов, регуляторов)
         self.signals_count = Signalvariable.query.filter_by(model_id=model_id).count()
-        # # Число измерений для записи (задания регуляторов, ЧРП)
-        # self.measurements_count_2 = Measurementvariable.query.filter_by(model_id=model_id).filter_by(modbus_unit=4).count()
-        # # Число сигналов для чтения (статус задвижек, механизмов, регуляторов)
-        # self.signals_count_2 = Signalvariable.query.filter_by(model_id=model_id).filter_by(modbus_unit=3).count()
+        # Перечень сигналов
+        self.simulation['model']['signal_names'] = {i.name:i.register_number for i in Signalvariable.query.filter_by(model_id=model_id).all()}
+
 
         self.reading_measurements = []
         self.reading_signals = []
@@ -90,6 +99,7 @@ class Simulation():
 
 
     def kill_SIT(self):
+        self.simulation['status'] = "SimInTech stops"
         p = Popen("TASKKILL /F /PID {pid} /T".format(pid=self.model_process.pid))
 
         self.simulation['status'] = "SimInTech is not running"
@@ -97,15 +107,6 @@ class Simulation():
         self.simulation['model']['status'] = ""
 
     def restart_model(self):
-        pass
-
-    def start_model(self):
-        pass
-
-    def pause_model(self):
-        pass
-
-    def start_model(self):
         pass
 
     def update_data(self):
@@ -118,13 +119,29 @@ class Simulation():
         pass
 
     async def reading_model_status(self, client):
-        while True:
+        while self.simulation['status'] == "SimInTech started":
             rr = await client.read_coils(0, 8, unit=1)
-            print(f"Статус {rr.bits}")
-            await asyncio.sleep(1)
+            status = rr.bits
+            print(f"Статус {status}")
+
+            if status[5] and not status[6] and not status[7]:
+                self.simulation['model']['status'] = "started"
+            elif not status[5] and status[6] and not status[7]:
+                self.simulation['model']['status'] = "paused"
+            elif not status[5] and not status[6] and status[7]:
+                self.simulation['model']['status'] = "stoped"
+            else:
+                self.simulation['model']['status'] = "indefined"
+
+            await asyncio.sleep(self.simulation['status_update_time'])
 
 
-    async def reading_data(self, client):
+    async def change_model_status(self, client, bit_nmb, bit_val):
+        rq = await client.write_coil(bit_nmb, bit_val, unit=1)
+
+
+
+    async def reading_model_data(self, client):
         max_reg = 125 # максимально число считываемых за раз регистров
         max_bit = 2000
 
@@ -134,9 +151,6 @@ class Simulation():
         reg_count = self.measurements_count * 2
         bit_count = self.signals_count
         bit_count = 3000
-
-        # meas_reg_count = 100
-        # signals_reg_count = 200
 
         for start in range(0,reg_count,max_reg):
             number = min(reg_count-start, max_reg)
