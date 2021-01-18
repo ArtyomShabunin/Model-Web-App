@@ -7,9 +7,37 @@ from pymodbus.client.asynchronous.tcp import AsyncModbusTCPClient as ModbusClien
 from pymodbus.client.asynchronous import schedulers
 from threading import Thread
 
+from app.restarts_handler import watch
+
 import time
 
 sim = Simulation()
+
+async def run_modbus_loop(port, message, func, *args):
+    def done(future):
+        print(message)
+    def start_loop(loop):
+        asyncio.set_event_loop(loop)
+        loop.run_forever()
+    loop = asyncio.new_event_loop()
+    t = Thread(target=start_loop, args=[loop])
+    t.daemon = True
+    # Start the loop
+    t.start()
+    assert loop.is_running()
+    asyncio.set_event_loop(loop)
+
+    loop, client = ModbusClient(schedulers.ASYNC_IO, port=port, loop=loop)
+
+    args = (client.protocol, *args)
+    future = asyncio.run_coroutine_threadsafe(func(*args), loop=loop)
+
+    future.add_done_callback(done)
+    # while not future.done():
+    #     time.sleep(0.1)
+    # loop.stop()
+
+
 
 @app.route('/')
 async def hello():
@@ -40,46 +68,13 @@ async def kill_SIT():
 
 @app.route('/simulation/start_status_loop',methods = ['PUT'])
 async def start_status_loop():
-    def done(future):
-        print("Обновление статуса остановлено")
-    def start_loop(loop):
-        asyncio.set_event_loop(loop)
-        loop.run_forever()
-    loop = asyncio.new_event_loop()
-    t = Thread(target=start_loop, args=[loop])
-    t.daemon = True
-    # Start the loop
-    t.start()
-    assert loop.is_running()
-    asyncio.set_event_loop(loop)
-    loop, client = ModbusClient(schedulers.ASYNC_IO, port=sim.modbus_control_port, loop=loop)
-    future = asyncio.run_coroutine_threadsafe(sim.reading_model_status(client.protocol), loop=loop)
-
-    future.add_done_callback(done)
-    # while not future.done():
-    #     time.sleep(0.1)
-    # loop.stop()
+    await run_modbus_loop(sim.modbus_control_port, "Обновление статуса остановлено", sim.reading_model_status)
     return 'Обновление статуса запущено ...'
 
 @app.route('/simulation/model/start',methods = ['PUT'])
 async def start_model():
     if sim.simulation['status'] == "SimInTech started":
-        def done(future):
-            print("Отправлена команда на запуск модели")
-        def start_loop(loop):
-            asyncio.set_event_loop(loop)
-            loop.run_forever()
-        loop = asyncio.new_event_loop()
-        t = Thread(target=start_loop, args=[loop])
-        t.daemon = True
-        # Start the loop
-        t.start()
-        assert loop.is_running()
-        asyncio.set_event_loop(loop)
-        loop, client = ModbusClient(schedulers.ASYNC_IO, port=sim.modbus_control_port, loop=loop)
-        future = asyncio.run_coroutine_threadsafe(sim.change_model_status(client.protocol, 2, True), loop=loop)
-
-        future.add_done_callback(done)
+        await run_modbus_loop(sim.modbus_control_port, "Отправлена команда на запуск модели", sim.change_model_status, 2, True)
         return 'Отправлена команда на запуск модели'
     else:
         return 'SimInTech не запущен'
@@ -88,48 +83,27 @@ async def start_model():
 @app.route('/simulation/model/stop',methods = ['PUT'])
 async def stop_model():
     if sim.simulation['status'] == "SimInTech started":
-        def done(future):
-            print("Отправлена команда на останов модели")
-        def start_loop(loop):
-            asyncio.set_event_loop(loop)
-            loop.run_forever()
-        loop = asyncio.new_event_loop()
-        t = Thread(target=start_loop, args=[loop])
-        t.daemon = True
-        # Start the loop
-        t.start()
-        assert loop.is_running()
-        asyncio.set_event_loop(loop)
-        loop, client = ModbusClient(schedulers.ASYNC_IO, port=sim.modbus_control_port, loop=loop)
-        future = asyncio.run_coroutine_threadsafe(sim.change_model_status(client.protocol, 1, True), loop=loop)
-
-        future.add_done_callback(done)
+        await run_modbus_loop(sim.modbus_control_port, "Отправлена команда на останов модели", sim.change_model_status, 1, True)
         return 'Отправлена команда на останов модели'
     else:
         return 'SimInTech не запущен'
 
 @app.route('/simulation/model/pause',methods = ['PUT'])
-async def зфгыу_model():
+async def pause_model():
     if sim.simulation['status'] == "SimInTech started":
-        def done(future):
-            print("Отправлена команда постановки модели на паузу")
-        def start_loop(loop):
-            asyncio.set_event_loop(loop)
-            loop.run_forever()
-        loop = asyncio.new_event_loop()
-        t = Thread(target=start_loop, args=[loop])
-        t.daemon = True
-        # Start the loop
-        t.start()
-        assert loop.is_running()
-        asyncio.set_event_loop(loop)
-        loop, client = ModbusClient(schedulers.ASYNC_IO, port=sim.modbus_control_port, loop=loop)
-        future = asyncio.run_coroutine_threadsafe(sim.change_model_status(client.protocol, 0, True), loop=loop)
-
-        future.add_done_callback(done)
+        await run_modbus_loop(sim.modbus_control_port, "Отправлена команда постановки модели на паузу", sim.change_model_status, 0, True)
         return 'Отправлена команда постановки модели на паузу'
     else:
         return 'SimInTech не запущен'
+
+
+@app.route('/simulation/model/start_restarts_handler',methods = ['PUT'])
+async def start_restarts_handler():
+
+    asyncio.ensure_future(watch())
+
+    return f'Запуск обработчика рестартов модели ...'
+
 
 # @app.route('/modelselection',methods = ['GET'])
 # def Modelselection():

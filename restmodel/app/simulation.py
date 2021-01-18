@@ -1,19 +1,3 @@
-# from app import app
-# import os
-# import modbus_tk
-# import modbus_tk.defines as cst
-# import modbus_tk.modbus_tcp as modbus_tcp
-# from threading import Thread
-# import time
-# import struct
-# import pandas as pd
-# from multiprocessing import Process
-# import numpy as np
-# import subprocess
-# import datetime
-# from sqlalchemy import create_engine
-# from pymodbus.client.sync import ModbusTcpClient
-
 import os
 import csv
 from subprocess import Popen, PIPE
