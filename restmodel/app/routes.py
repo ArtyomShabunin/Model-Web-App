@@ -7,7 +7,7 @@ from pymodbus.client.asynchronous.tcp import AsyncModbusTCPClient as ModbusClien
 from pymodbus.client.asynchronous import schedulers
 from threading import Thread
 
-from app.restarts_handler import watch
+from app.restarts_handler import watch_restarts, clear_temp_restarts
 
 import time
 
@@ -65,7 +65,6 @@ async def kill_SIT():
     else:
         return 'SimInTech не запущен'
 
-
 @app.route('/simulation/start_status_loop',methods = ['PUT'])
 async def start_status_loop():
     await run_modbus_loop(sim.modbus_control_port, "Обновление статуса остановлено", sim.reading_model_status)
@@ -78,7 +77,6 @@ async def start_model():
         return 'Отправлена команда на запуск модели'
     else:
         return 'SimInTech не запущен'
-
 
 @app.route('/simulation/model/stop',methods = ['PUT'])
 async def stop_model():
@@ -96,14 +94,25 @@ async def pause_model():
     else:
         return 'SimInTech не запущен'
 
-
-@app.route('/simulation/model/start_restarts_handler',methods = ['PUT'])
+@app.route('/simulation/model/restart/start_restarts_handler',methods = ['PUT'])
 async def start_restarts_handler():
 
-    asyncio.ensure_future(watch())
+    asyncio.ensure_future(watch_restarts(sim.simulation['model']['name']))
 
     return f'Запуск обработчика рестартов модели ...'
 
+@app.route('/simulation/model/restart/save',methods = ['POST'])
+async def save_restart():
+    if sim.simulation['status'] == "SimInTech started" and (sim.simulation['model']['status'] == "started" or sim.simulation['model']['status'] == "paused"):
+        await run_modbus_loop(sim.modbus_control_port, "Отправлена команда сохранения рестарта", sim.change_model_status, 3, True)
+        return 'Отправлена команда сохранения рестарта'
+    else:
+        return 'SimInTech не запущен или модель остановлена'
+
+@app.route('/simulation/model/restart/clear_temp',methods = ['PUT'])
+def restart_clear_temp():
+    clear_temp_restarts()
+    return 'Папка "temp_restarts" удалена!'
 
 # @app.route('/modelselection',methods = ['GET'])
 # def Modelselection():
