@@ -10,6 +10,12 @@ from app import app, db
 from app.models import *
 # from datetime import timedelta
 
+import psutil
+import win32gui
+import win32process
+
+import re
+
 csv_file = r"..\simintech\model\modbus_signal\variables.csv"
 script_dir = os.path.dirname(__file__)
 
@@ -26,7 +32,10 @@ def add_variables(csv_file, model_id):
         db.session.add(u)
     db.session.commit()
 
-
+def enum_window_callback(hwnd, args):
+    tid, current_pid = win32process.GetWindowThreadProcessId(hwnd)
+    if args[0] == current_pid and win32gui.IsWindowVisible(hwnd):
+        args[1].append(win32gui.GetWindowText(hwnd))
 
 class Simulation():
 
@@ -42,6 +51,7 @@ class Simulation():
         self.simulation['model']['name'] = ""
         self.simulation['model']['status'] = ""
         self.simulation['model']['signals_update_time'] = 1
+        self.simulation['model']['list_of_projects'] = []
 
         self.simulation['model']['measurement_names'] = {}
         self.simulation['model']['measurement_values'] = []
@@ -52,6 +62,7 @@ class Simulation():
         self.modbus_host = "127.0.0.1"
         self.modbus_control_port = 1502
         self.modbus_model_port = 1503
+
 
     async def start_SIT(self, model_name:str):
 
@@ -78,8 +89,28 @@ class Simulation():
 
         # Запуск SimInTech
         self.model_process = Popen(self.SIT_start_pattern.format(self.model_filename), stdout=PIPE, shell=True)
-        await asyncio.sleep(40)
+
+        # Дальше запускаем проверку окна "О программе". После его закрытия считаем что SIT запущен
+        start_check = False
+        while True:
+            await asyncio.sleep(2)
+            windows = []
+
+            if psutil.Process(self.model_process.pid).children():
+                win32gui.EnumWindows(enum_window_callback, [psutil.Process(self.model_process.pid).children()[0].pid, windows])
+
+            if not start_check:
+                start_check = 'О программе' in windows
+                continue
+
+            if 'О программе' not in windows:
+                break
+
         self.simulation['status'] = "SimInTech started"
+
+        # Получаем список запущенных проектов SimInTech
+        pattern =  re.compile('C:.*prt')
+        self.simulation['model']['list_of_projects'] = [s for s in windows if pattern.match(s)]
 
 
     def kill_SIT(self):

@@ -4,9 +4,11 @@ import glob
 import time
 import shutil
 import os
+from functools import reduce
+from collections import Counter
 
-dir_list = glob.glob('./**/restarts', recursive=True)
-script_dir = os.path.dirname(__file__)
+# dir_list = glob.glob('./**/restarts', recursive=True)
+# script_dir = os.path.dirname(__file__)
 
 async def watch(model_name, dir):
    async for changes in awatch(dir):
@@ -24,7 +26,7 @@ async def watch(model_name, dir):
 
                print(f'File copy made - "{new_file_dir}"')
 
-async def watch_restarts(model_name):
+async def watch_restarts(model_name, dir_list):
     tasks = [asyncio.ensure_future(watch(model_name, i)) for i in dir_list]
     await asyncio.wait(tasks)
 
@@ -32,3 +34,26 @@ def clear_temp_restarts():
     dir_list = glob.glob('./**/temp_restarts', recursive=True)
     for folder in dir_list:
         shutil.rmtree(os.path.abspath(folder))
+
+def show_restarts_list(dir_list):
+    prj_count = len(dir_list)
+    res_list = []
+    for d in dir_list:
+        res_list.append(glob.glob(os.path.join(d, '*.rst'), recursive=True))
+
+    res_list = reduce(lambda x,y :x+y, res_list)
+    res_list = [os.path.basename(i) for i in res_list]
+
+    restarts_counter = Counter(res_list)
+
+    d = {'restarts': [i for i in restarts_counter if restarts_counter[i] >= prj_count]}
+
+    # print(c)
+    #
+    #
+    # print(f'Количество проектов {prj_count}')
+    # print()
+
+    # res_list = glob.glob('./**/restarts/*.rst', recursive=True)
+    # name_res_list = set([i.split('\\')[-1] for i in res_list])
+    return d

@@ -7,9 +7,10 @@ from pymodbus.client.asynchronous.tcp import AsyncModbusTCPClient as ModbusClien
 from pymodbus.client.asynchronous import schedulers
 from threading import Thread
 
-from app.restarts_handler import watch_restarts, clear_temp_restarts
+from app.restarts_handler import watch_restarts, clear_temp_restarts, show_restarts_list
 
 import time
+import os
 
 sim = Simulation()
 
@@ -96,9 +97,7 @@ async def pause_model():
 
 @app.route('/simulation/model/restart/start_restarts_handler',methods = ['PUT'])
 async def start_restarts_handler():
-
-    asyncio.ensure_future(watch_restarts(sim.simulation['model']['name']))
-
+    asyncio.ensure_future(watch_restarts(sim.simulation['model']['name'], [os.path.join(os.path.dirname(d), 'restarts') for d in sim.simulation['model']['list_of_projects']]))
     return f'Запуск обработчика рестартов модели ...'
 
 @app.route('/simulation/model/restart/save',methods = ['POST'])
@@ -113,6 +112,12 @@ async def save_restart():
 def restart_clear_temp():
     clear_temp_restarts()
     return 'Папка "temp_restarts" удалена!'
+
+@app.route('/simulation/model/restarts',methods = ['GET'])
+def show_restarts():
+    restarts = show_restarts_list([os.path.join(os.path.dirname(d), 'restarts') for d in sim.simulation['model']['list_of_projects']])
+
+    return jsonify(restarts)
 
 # @app.route('/modelselection',methods = ['GET'])
 # def Modelselection():
