@@ -7,10 +7,14 @@ from pymodbus.client.asynchronous.tcp import AsyncModbusTCPClient as ModbusClien
 from pymodbus.client.asynchronous import schedulers
 from threading import Thread
 
-from app.restarts_handler import watch_restarts, clear_temp_restarts, show_restarts_list
+from app.restarts_handler import watch_restarts, clear_temp_restarts, show_restarts_list, RestartsHandler
+
+from app.new_restarts_handler import watch, consume
 
 import time
 import os
+
+from pathlib import Path
 
 sim = Simulation()
 
@@ -38,9 +42,44 @@ async def run_modbus_loop(port, message, func, *args):
     #     time.sleep(0.1)
     # loop.stop()
 
+@app.route('/simulation/model/restarts/start_restarts_handler_2',methods = ['PUT'])
+async def start_restarts_handler_2():
+    def done(future):
+        print("Hello")
+    def start_loop(loop):
+        asyncio.set_event_loop(loop)
+        # loop.run_forever()
+    # loop = asyncio.new_event_loop()
+    loop = asyncio.get_event_loop()
+    # t = Thread(target=start_loop, args=[loop])
+    # t.daemon = True
+    # # Start the loop
+    # t.start()
+    # assert loop.is_running()
+    # asyncio.set_event_loop(loop)
 
+    paths = [os.path.join(os.path.dirname(d), 'restarts') for d in sim.simulation['model']['list_of_projects']]
 
-@app.route('/')
+    queue = asyncio.Queue(loop=loop)
+
+    futures = [
+        loop.run_in_executor(None, watch, paths, queue, loop, False),
+        consume(queue),
+    ]
+
+    asyncio.ensure_future(asyncio.gather(*futures))
+    # loop.run_until_complete(asyncio.gather(*futures))
+
+    # loop, client = ModbusClient(schedulers.ASYNC_IO, port=port, loop=loop)
+
+    # args = (client.protocol, *args)
+    # future = asyncio.run_coroutine_threadsafe(func(*args), loop=loop)
+    #
+    # future.add_done_callback(done)
+
+    return "Обработчик рестартов запущен"
+
+@app.route('/', methods = ['GET'])
 async def hello():
     return 'Привет'
 

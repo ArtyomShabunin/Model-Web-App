@@ -7,8 +7,25 @@ import os
 from functools import reduce
 from collections import Counter
 
-# dir_list = glob.glob('./**/restarts', recursive=True)
-# script_dir = os.path.dirname(__file__)
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
+
+async def some_async_handler(event):
+    print(f'event type: {event.event_type}  path : {event.src_path}')
+
+class RestartsHandler(FileSystemEventHandler):
+    def __init__(self, loop, *args, **kwargs):
+        self._loop = loop
+        super().__init__(*args, **kwargs)
+
+    def on_modified(self, event):
+        print(f'event type: {event.event_type}  path : {event.src_path}')
+
+    def on_deleted(self, event):
+        print(f'event type: {event.event_type}  path : {event.src_path}')
+
+
+
 
 async def watch(model_name, dir):
    async for changes in awatch(dir):
