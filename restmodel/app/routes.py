@@ -9,7 +9,7 @@ from threading import Thread
 
 from app.restarts_handler import watch_restarts, clear_temp_restarts, show_restarts_list, RestartsHandler
 
-from app.new_restarts_handler import watch, consume
+from app.new_restarts_handler import consume, RestartsWatcher, make_restart_copy
 
 import time
 import os
@@ -17,6 +17,7 @@ import os
 from pathlib import Path
 
 sim = Simulation()
+rw = RestartsWatcher()
 
 async def run_modbus_loop(port, message, func, *args):
     def done(future):
@@ -44,10 +45,10 @@ async def run_modbus_loop(port, message, func, *args):
 
 @app.route('/simulation/model/restarts/start_restarts_handler_2',methods = ['PUT'])
 async def start_restarts_handler_2():
-    def done(future):
-        print("Hello")
-    def start_loop(loop):
-        asyncio.set_event_loop(loop)
+    # def done(future):
+    #     print("Hello")
+    # def start_loop(loop):
+    #     asyncio.set_event_loop(loop)
         # loop.run_forever()
     # loop = asyncio.new_event_loop()
     loop = asyncio.get_event_loop()
@@ -58,13 +59,52 @@ async def start_restarts_handler_2():
     # assert loop.is_running()
     # asyncio.set_event_loop(loop)
 
-    paths = [os.path.join(os.path.dirname(d), 'restarts') for d in sim.simulation['model']['list_of_projects']]
+    async def while_loop(rw, paths):
+        while True:
+            if time.time() - rw.handler.prev_time < 10:
+                await asyncio.sleep(1)
+            else:
+                print("Простой обсервера больше 10 сек")
+
+                print(f'Длина rw.handler.activ_paths - {len(rw.handler.activ_paths)}')
+                print(f'Длина paths - {len(paths)}')
+
+
+
+
+                for path in rw.handler.activ_paths:
+                    print(f'path - {path}')
+                    print("Очистка списка директорий")
+                    print(paths.pop(paths.index(path)))
+                    print(f'Длина списка директорий: {len(paths)}')
+
+                if not paths:
+                    print("Список директорий пуст")
+
+                    for path in rw.handler.activ_paths:
+                        await make_restart_copy(sim.simulation['model']['name'], path)
+
+
+
+
+
+                else:
+                    print("Список директорий:")
+                    for i in paths:
+                        print(i)
+
+                await asyncio.sleep(4)
+
+
+
+
+    paths = list(set([os.path.join(os.path.dirname(d), 'restarts') for d in sim.simulation['model']['list_of_projects']]))
 
     queue = asyncio.Queue(loop=loop)
-
     futures = [
-        loop.run_in_executor(None, watch, paths, queue, loop, False),
-        consume(queue),
+        loop.run_in_executor(None, rw.watch, paths, queue, loop, False),
+        consume(queue, sim.simulation['model']['name']),
+        while_loop(rw, paths)
     ]
 
     asyncio.ensure_future(asyncio.gather(*futures))
