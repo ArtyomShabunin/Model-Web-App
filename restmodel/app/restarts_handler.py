@@ -1,51 +1,59 @@
 import asyncio
-from watchgod import awatch
 import glob
 import time
 import shutil
 import os
 from functools import reduce
 from collections import Counter
-
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
-
-async def some_async_handler(event):
-    print(f'event type: {event.event_type}  path : {event.src_path}')
-
-class RestartsHandler(FileSystemEventHandler):
-    def __init__(self, loop, *args, **kwargs):
-        self._loop = loop
-        super().__init__(*args, **kwargs)
-
-    def on_modified(self, event):
-        print(f'event type: {event.event_type}  path : {event.src_path}')
-
-    def on_deleted(self, event):
-        print(f'event type: {event.event_type}  path : {event.src_path}')
+import re
 
 
+async def rewrite_restart():
+    pass
 
+    
 
-async def watch(model_name, dir):
-   async for changes in awatch(dir):
-       for status, location in changes:
+async def make_restart_copy(model_name, location):
+    file_time = time.localtime(time.time())
+    file_name = rf'{model_name}_{file_time.tm_year}_{str(file_time.tm_mon).zfill(2)}_{str(file_time.tm_mday).zfill(2)}_{str(file_time.tm_hour).zfill(2)}_{str(file_time.tm_min).zfill(2)}_{str(file_time.tm_sec).zfill(2)}'
+    full_name = os.path.basename(location).replace('restart', file_name)
 
-           print(f'File "{location}" - {status.name}')
+    new_file_dir = r'\\'.join(os.path.dirname(location).split('\\')[0:-1]+['temp_restarts', full_name])
 
-           if status.name == 'modified' or status.name == 'added':
-               file_time = time.localtime(time.time())
-               file_name = f'{model_name}_{file_time.tm_year}_{file_time.tm_mon}_{file_time.tm_mday}_{file_time.tm_hour}_{file_time.tm_min}_{file_time.tm_sec}.rst'
-               new_file_dir = '\\'.join(location.split('\\')[0:-1]+['..', 'temp_restarts', file_name])
+    os.makedirs(os.path.dirname(new_file_dir), exist_ok=True)
+    shutil.copy(os.path.abspath(location), os.path.abspath(new_file_dir))
 
-               os.makedirs(os.path.dirname(new_file_dir), exist_ok=True)
-               shutil.copy(os.path.abspath(location), os.path.abspath(new_file_dir))
+async def restarts_handler(model_name, paths, save_time):
+    pattern =  re.compile('.*restart\.rst.*')
+    await asyncio.sleep(10)
+    while True:
+        if time.time() - save_time > 30:
+            print('Ошибка сохранения рестарта!')
+            break
 
-               print(f'File copy made - "{new_file_dir}"')
+        restarts = []
+        for path in paths:
+            restarts += [os.path.join(path,i) for i in os.listdir(path) if pattern.match(i)]
 
-async def watch_restarts(model_name, dir_list):
-    tasks = [asyncio.ensure_future(watch(model_name, i)) for i in dir_list]
-    await asyncio.wait(tasks)
+        print(f'Число проектов {len(paths)}')
+        print(f'Число рестартов {len(restarts)}')
+
+        if len(restarts) > len(paths):
+            restarts_is_new = True
+            for restart in restarts:
+                restarts_is_new = restarts_is_new and (time.time() - os.path.getmtime(restart) < 10)
+                print(f'Рестарт {os.path.basename(restart)} обновлен {time.time() - os.path.getmtime(restart)}c назад')
+                if not restarts_is_new:
+                    break
+
+            if restarts_is_new:
+                print('Сохранение рестартов')
+                await asyncio.sleep(8)
+                for restart in restarts:
+                    await make_restart_copy(model_name, restart)
+                print('Restart saved!')
+                break
+        await asyncio.sleep(4)
 
 def clear_temp_restarts():
     dir_list = glob.glob('./**/temp_restarts', recursive=True)
@@ -64,13 +72,4 @@ def show_restarts_list(dir_list):
     restarts_counter = Counter(res_list)
 
     d = {'restarts': [i for i in restarts_counter if restarts_counter[i] >= prj_count]}
-
-    # print(c)
-    #
-    #
-    # print(f'Количество проектов {prj_count}')
-    # print()
-
-    # res_list = glob.glob('./**/restarts/*.rst', recursive=True)
-    # name_res_list = set([i.split('\\')[-1] for i in res_list])
     return d

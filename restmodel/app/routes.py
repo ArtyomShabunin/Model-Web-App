@@ -7,17 +7,15 @@ from pymodbus.client.asynchronous.tcp import AsyncModbusTCPClient as ModbusClien
 from pymodbus.client.asynchronous import schedulers
 from threading import Thread
 
-from app.restarts_handler import watch_restarts, clear_temp_restarts, show_restarts_list, RestartsHandler
-
-from app.new_restarts_handler import consume, RestartsWatcher, make_restart_copy
+from app.restarts_handler import clear_temp_restarts, show_restarts_list, restarts_handler
 
 import time
 import os
 
+
 from pathlib import Path
 
 sim = Simulation()
-rw = RestartsWatcher()
 
 async def run_modbus_loop(port, message, func, *args):
     def done(future):
@@ -56,9 +54,14 @@ async def get_simulation():
 @app.route('/simulation/start/<string:model_name>',methods = ['PUT'])
 async def start_SIT(model_name):
 
-    if sim.simulation['status'] == "SimInTech is not running":
-        asyncio.ensure_future(sim.start_SIT(model_name))
+    async def step_by_step():
+        await sim.start_SIT(model_name)
+        print('SimInTech запущен!')
+        await run_modbus_loop(sim.modbus_control_port, "Обновление статуса остановлено", sim.reading_model_status)
+        print('Обновление статуса запущено ...')
 
+    if sim.simulation['status'] == "SimInTech is not running":
+        asyncio.ensure_future(step_by_step())
         return f'Запуск SimInTech с моделью {model_name} ...'
     else:
         return f"SimInTech уже запущен с моделью {sim.simulation['model']['name']}"
@@ -100,79 +103,13 @@ async def pause_model():
     else:
         return 'SimInTech не запущен'
 
-@app.route('/simulation/model/restart/start_restarts_handler',methods = ['PUT'])
-async def start_restarts_handler():
-    asyncio.ensure_future(watch_restarts(sim.simulation['model']['name'], [os.path.join(os.path.dirname(d), 'restarts') for d in sim.simulation['model']['list_of_projects']]))
-    return f'Запуск обработчика рестартов модели ...'
 
 @app.route('/simulation/model/restart/save',methods = ['POST'])
 async def save_restart():
-    loop = asyncio.get_event_loop()
-
-
-
-
-    async def while_loop(paths, prev_time, restarts_paths):
-        while True:
-            if time.time() - prev_time < 10:
-                await asyncio.sleep(4)
-            else:
-
-                dir_paths = set([os.path.dirname(path) for path in restarts_paths])
-                print("Простой обсервера больше 10 сек")
-
-                print(f'Длина dir_paths - {len(dir_paths)}')
-                print(f'Длина paths - {len(paths)}')
-
-
-                for path in dir_paths:
-                    print(f'path - {path}')
-                    print("Очистка списка директорий")
-                    print(paths.pop(paths.index(path)))
-                    print(f'Длина списка директорий: {len(paths)}')
-
-                if not paths:
-                    print("Список директорий пуст")
-
-                    # Делаем копии файлов рестартов
-                    print('Пути к рестартам для копирования')
-                    for path in restarts_paths:
-                        print(path)
-                        await make_restart_copy(sim.simulation['model']['name'], path)
-
-                    rw.observer.stop()
-                    break
-
-                else:
-                    print("Список директорий:")
-                    for i in paths:
-                        print(i)
-
-                await asyncio.sleep(4)
-
-        print("Обработчик рестартов остановлен")
-
-
-    restarts_paths = set()
-    prev_time = time.time()
-
-    paths = list(set([os.path.join(os.path.dirname(d), 'restarts') for d in sim.simulation['model']['list_of_projects']]))
-
-    queue = asyncio.Queue(loop=loop)
-    futures = [
-        # loop.run_in_executor(None, rw.watch, paths, queue, loop, False),
-        # consume(queue, prev_time, restarts_paths),
-        while_loop(paths, prev_time, restarts_paths)
-    ]
-
-    asyncio.ensure_future(asyncio.gather(*futures))
-
-    await asyncio.sleep(2)
-    print("Обработчик рестартов запущен")
-
-
 
     if sim.simulation['status'] == "SimInTech started" and (sim.simulation['model']['status'] == "started" or sim.simulation['model']['status'] == "paused"):
+        paths = list(set([os.path.join(os.path.dirname(d), 'restarts') for d in sim.simulation['model']['list_of_projects']]))
+        asyncio.ensure_future(restarts_handler(sim.simulation['model']['name'], paths, time.time()))
         await run_modbus_loop(sim.modbus_control_port, "Отправлена команда сохранения рестарта", sim.change_model_status, 3, True)
         return 'Отправлена команда сохранения рестарта'
     else:

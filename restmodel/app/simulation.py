@@ -137,7 +137,6 @@ class Simulation():
         while self.simulation['status'] == "SimInTech started":
             rr = await client.read_coils(0, 8, unit=1)
             status = rr.bits
-            print(f"Статус {status}")
 
             if status[5] and not status[6] and not status[7]:
                 self.simulation['model']['status'] = "started"
