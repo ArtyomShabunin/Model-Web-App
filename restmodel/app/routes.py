@@ -43,81 +43,7 @@ async def run_modbus_loop(port, message, func, *args):
     #     time.sleep(0.1)
     # loop.stop()
 
-@app.route('/simulation/model/restarts/start_restarts_handler_2',methods = ['PUT'])
-async def start_restarts_handler_2():
-    # def done(future):
-    #     print("Hello")
-    # def start_loop(loop):
-    #     asyncio.set_event_loop(loop)
-        # loop.run_forever()
-    # loop = asyncio.new_event_loop()
-    loop = asyncio.get_event_loop()
-    # t = Thread(target=start_loop, args=[loop])
-    # t.daemon = True
-    # # Start the loop
-    # t.start()
-    # assert loop.is_running()
-    # asyncio.set_event_loop(loop)
 
-    async def while_loop(rw, paths):
-        while True:
-            if time.time() - rw.handler.prev_time < 10:
-                await asyncio.sleep(1)
-            else:
-                print("Простой обсервера больше 10 сек")
-
-                print(f'Длина rw.handler.activ_paths - {len(rw.handler.activ_paths)}')
-                print(f'Длина paths - {len(paths)}')
-
-
-
-
-                for path in rw.handler.activ_paths:
-                    print(f'path - {path}')
-                    print("Очистка списка директорий")
-                    print(paths.pop(paths.index(path)))
-                    print(f'Длина списка директорий: {len(paths)}')
-
-                if not paths:
-                    print("Список директорий пуст")
-
-                    for path in rw.handler.activ_paths:
-                        await make_restart_copy(sim.simulation['model']['name'], path)
-
-
-
-
-
-                else:
-                    print("Список директорий:")
-                    for i in paths:
-                        print(i)
-
-                await asyncio.sleep(4)
-
-
-
-
-    paths = list(set([os.path.join(os.path.dirname(d), 'restarts') for d in sim.simulation['model']['list_of_projects']]))
-
-    queue = asyncio.Queue(loop=loop)
-    futures = [
-        loop.run_in_executor(None, rw.watch, paths, queue, loop, False),
-        consume(queue, sim.simulation['model']['name']),
-        while_loop(rw, paths)
-    ]
-
-    asyncio.ensure_future(asyncio.gather(*futures))
-    # loop.run_until_complete(asyncio.gather(*futures))
-
-    # loop, client = ModbusClient(schedulers.ASYNC_IO, port=port, loop=loop)
-
-    # args = (client.protocol, *args)
-    # future = asyncio.run_coroutine_threadsafe(func(*args), loop=loop)
-    #
-    # future.add_done_callback(done)
-
-    return "Обработчик рестартов запущен"
 
 @app.route('/', methods = ['GET'])
 async def hello():
@@ -181,6 +107,71 @@ async def start_restarts_handler():
 
 @app.route('/simulation/model/restart/save',methods = ['POST'])
 async def save_restart():
+    loop = asyncio.get_event_loop()
+
+
+
+
+    async def while_loop(paths, prev_time, restarts_paths):
+        while True:
+            if time.time() - prev_time < 10:
+                await asyncio.sleep(4)
+            else:
+
+                dir_paths = set([os.path.dirname(path) for path in restarts_paths])
+                print("Простой обсервера больше 10 сек")
+
+                print(f'Длина dir_paths - {len(dir_paths)}')
+                print(f'Длина paths - {len(paths)}')
+
+
+                for path in dir_paths:
+                    print(f'path - {path}')
+                    print("Очистка списка директорий")
+                    print(paths.pop(paths.index(path)))
+                    print(f'Длина списка директорий: {len(paths)}')
+
+                if not paths:
+                    print("Список директорий пуст")
+
+                    # Делаем копии файлов рестартов
+                    print('Пути к рестартам для копирования')
+                    for path in restarts_paths:
+                        print(path)
+                        await make_restart_copy(sim.simulation['model']['name'], path)
+
+                    rw.observer.stop()
+                    break
+
+                else:
+                    print("Список директорий:")
+                    for i in paths:
+                        print(i)
+
+                await asyncio.sleep(4)
+
+        print("Обработчик рестартов остановлен")
+
+
+    restarts_paths = set()
+    prev_time = time.time()
+
+    paths = list(set([os.path.join(os.path.dirname(d), 'restarts') for d in sim.simulation['model']['list_of_projects']]))
+
+    queue = asyncio.Queue(loop=loop)
+    futures = [
+        # loop.run_in_executor(None, rw.watch, paths, queue, loop, False),
+        # consume(queue, prev_time, restarts_paths),
+        while_loop(paths, prev_time, restarts_paths)
+    ]
+
+    asyncio.ensure_future(asyncio.gather(*futures))
+
+    await asyncio.sleep(2)
+    print("Обработчик рестартов запущен")
+
+
+
     if sim.simulation['status'] == "SimInTech started" and (sim.simulation['model']['status'] == "started" or sim.simulation['model']['status'] == "paused"):
         await run_modbus_loop(sim.modbus_control_port, "Отправлена команда сохранения рестарта", sim.change_model_status, 3, True)
         return 'Отправлена команда сохранения рестарта'
