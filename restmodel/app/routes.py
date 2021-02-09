@@ -1,5 +1,5 @@
 import asyncio
-from quart import Quart, jsonify
+from quart import Quart, jsonify, request
 from app import app, db
 from app.models import *
 from app.simulation import Simulation
@@ -7,7 +7,7 @@ from pymodbus.client.asynchronous.tcp import AsyncModbusTCPClient as ModbusClien
 from pymodbus.client.asynchronous import schedulers
 from threading import Thread
 
-from app.restarts_handler import clear_temp_restarts, show_restarts_list, restarts_handler
+from app.restarts_handler import clear_temp_restarts, show_restarts_list, restarts_handler, rewrite_restart
 
 import time
 import os
@@ -125,6 +125,26 @@ def show_restarts():
     restarts = show_restarts_list([os.path.join(os.path.dirname(d), 'restarts') for d in sim.simulation['model']['list_of_projects']])
 
     return jsonify(restarts)
+
+@app.route('/simulation/model/temp_restarts',methods = ['GET'])
+def show_temp_restarts():
+    temp_restarts = show_restarts_list([os.path.join(os.path.dirname(d), 'temp_restarts') for d in sim.simulation['model']['list_of_projects']])
+
+    return jsonify(temp_restarts)
+
+@app.route('/simulation/model/restart/<string:restart_name>/start',methods = ['PUT'])
+async def start_restart(restart_name):
+    paths = [os.path.dirname(d) for d in sim.simulation['model']['list_of_projects']]
+    restart_name = f'{restart_name}.rst'
+    overwritten = await rewrite_restart(paths, restart_name, 'restart.rst')
+
+    return f'Рестарт {restart_name} запущен'
+
+@app.route('/simulation/model/restart/<string:restart_name>/rewrite',methods = ['POST'])
+async def rewrite_restart(restart_name):
+    new_name = request.args.get('new_name')
+
+    return f'Рестарт {restart_name} перезаписан как {new_name}'
 
 # @app.route('/modelselection',methods = ['GET'])
 # def Modelselection():

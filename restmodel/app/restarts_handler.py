@@ -8,23 +8,48 @@ from collections import Counter
 import re
 
 
-async def rewrite_restart():
-    pass
+async def rewrite_restart(prj_paths, restart_name, new_restart_name):
+    """Функция перезаписывает рестарт, рестарт с заданным именем
+    перезаписывает второй или создается новый рестарт"""
+    res_paths = [os.path.join(d, 'restarts') for d in prj_paths]
+    temp_res_paths = [os.path.join(d, 'temp_restarts') for d in prj_paths]
+    restarts = show_restarts_list(res_paths)['restarts']
+    temp_restarts = show_restarts_list(temp_res_paths)['restarts']
 
-    
+    print(res_paths)
+    print(temp_res_paths)
+    print(restarts)
+    print(temp_restarts)
 
-async def make_restart_copy(model_name, location):
-    file_time = time.localtime(time.time())
-    file_name = rf'{model_name}_{file_time.tm_year}_{str(file_time.tm_mon).zfill(2)}_{str(file_time.tm_mday).zfill(2)}_{str(file_time.tm_hour).zfill(2)}_{str(file_time.tm_min).zfill(2)}_{str(file_time.tm_sec).zfill(2)}'
-    full_name = os.path.basename(location).replace('restart', file_name)
+    if restart_name in restarts:
+        print(f'Рестарт с именем "{restart_name}" в папке "restarts"')
+        for p in res_paths:
+            shutil.copyfile(os.path.join(p, restart_name), os.path.join(p, new_restart_name))
+        return True
+    elif restart_name in temp_restarts:
+        print(f'Рестарт с именем "{restart_name}" в папке "temp_restarts"')
+        for p in temp_res_paths:
+            p2 = os.path.join(os.path.dirname(p), 'restarts')
+            shutil.copyfile(os.path.join(p, restart_name), os.path.join(p2, new_restart_name))
+        return True
+    else:
+        print(f'Рестарт с именем "{restart_name}" не существует')
+        return False
+
+async def make_restart_copy(name, location):
+    full_name = os.path.basename(location).replace('restart', name)
 
     new_file_dir = r'\\'.join(os.path.dirname(location).split('\\')[0:-1]+['temp_restarts', full_name])
+
 
     os.makedirs(os.path.dirname(new_file_dir), exist_ok=True)
     shutil.copy(os.path.abspath(location), os.path.abspath(new_file_dir))
 
 async def restarts_handler(model_name, paths, save_time):
     pattern =  re.compile('.*restart\.rst.*')
+    file_time = time.localtime(save_time)
+    name = rf'{model_name}_{file_time.tm_year}_{str(file_time.tm_mon).zfill(2)}_{str(file_time.tm_mday).zfill(2)}_{str(file_time.tm_hour).zfill(2)}_{str(file_time.tm_min).zfill(2)}_{str(file_time.tm_sec).zfill(2)}'
+
     await asyncio.sleep(10)
     while True:
         if time.time() - save_time > 30:
@@ -50,7 +75,7 @@ async def restarts_handler(model_name, paths, save_time):
                 print('Сохранение рестартов')
                 await asyncio.sleep(8)
                 for restart in restarts:
-                    await make_restart_copy(model_name, restart)
+                    await make_restart_copy(name, restart)
                 print('Restart saved!')
                 break
         await asyncio.sleep(4)
