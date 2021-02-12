@@ -1,3 +1,0 @@
-GRAF_X
-GRAF_Y
-GRAF_Z
