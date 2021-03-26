@@ -171,6 +171,8 @@ class Simulation():
             rr = await client.read_coils(0, 8, unit=1)
             status = rr.bits
 
+            print(status)
+
             if status[5] and not status[6] and not status[7]:
                 self.simulation['model']['status'] = "started"
             elif not status[5] and status[6] and not status[7]:
@@ -196,25 +198,32 @@ class Simulation():
         bit_count = self.signals_count
         bit_count = 3000
 
-        for start in range(0, reg_count, max_reg):
-            number = min(reg_count - start, max_reg)
-            rr = await client.read_holding_registers(start, number, unit=1)
-            reading_reg += rr.registers
+        while self.simulation['model']['status'] == "started":
 
-        for start in range(0, bit_count, max_bit):
-            number = min(bit_count - start, max_bit)
-            rr = await client.read_coils(start, number, unit=1)
-            print("start {}".format(start))
-            reading_bit += rr.bits
-            print("норм")
+            for start in range(0, reg_count, max_reg):
+                number = min(reg_count - start, max_reg)
+                rr = await client.read_holding_registers(start, number, unit=1)
+                reading_reg += rr.registers
 
-        self.reading_measurements = (np.array(reading_reg, dtype=np.int16)
-                                     .view(dtype=np.float32))
+            for start in range(0, bit_count, max_bit):
+                number = min(bit_count - start, max_bit)
+                rr = await client.read_coils(start, number, unit=1)
+                print("start {}".format(start))
+                reading_bit += rr.bits
+                print("норм")
 
-        print(reading_reg[0:10])
-        print(reading_bit[0:10])
-        self.reading_signals = reading_bit
+            self.reading_measurements = (np.array(reading_reg, dtype=np.int16)
+                                         .view(dtype=np.float32))
+            self.simulation['model']['measurement_values'] = self.reading_measurements.tolist()
 
+
+            self.reading_signals = reading_bit
+            self.simulation['model']['signal_values'] = reading_bit
+
+            print(self.reading_measurements[0:10])
+            print(self.reading_signals[0:10])
+
+            await asyncio.sleep(self.simulation['model']['signals_update_time'])
 
 if __name__ == '__main__':
     file_name = r"..\..\simintech\model\pac\boiler_model_auxsteam.pak"

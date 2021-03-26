@@ -20,6 +20,8 @@ from app.restarts_handler \
 import time
 import os
 
+from app.models import Measurementvariable, Signalvariable, Model
+
 sim = Simulation()
 
 
@@ -128,11 +130,27 @@ async def start_model():
 
     Функция запускает модель.
     """
-    if sim.simulation['status'] == "SimInTech started":
+
+    async def check_model_start():
+        while sim.simulation['model']['status'] != 'started':
+            await asyncio.sleep(0.5)
+
+    async def step_by_step():
         await run_modbus_loop(sim.modbus_control_port,
                               "Отправлена команда на запуск модели",
                               sim.change_model_status, 2, True)
-        return 'Отправлена команда на запуск модели'
+        print('Отправлена команда на запуск модели')
+        await check_model_start()
+        print('Модель запущена!')
+        await run_modbus_loop(sim.modbus_model_port,
+                              "Запуск чтения данных из модели",
+                              sim.reading_model_data)
+        print('Чтение данных из модели ...')
+
+    if sim.simulation['status'] == "SimInTech started":
+
+        asyncio.ensure_future(step_by_step())
+        return 'Модель запущена с чтением данных'
     else:
         return 'SimInTech не запущен'
 
@@ -257,6 +275,17 @@ async def rest_rewrite_restart(restart_name):
     new_name = request.args.get('new_name')
 
     return f'Рестарт {restart_name} перезаписан как {new_name}'
+
+
+@app.route('/model', methods=['GET'])
+async def get_models():
+    """
+    Список доступных моделей
+
+    Функция выдает список моделей из базы данных.
+    """
+    return jsonify(Model.query.all())
+
 
 # @app.route('/modelselection',methods = ['GET'])
 # def Modelselection():
