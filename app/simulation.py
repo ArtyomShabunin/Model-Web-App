@@ -23,7 +23,6 @@ import win32process
 
 import re
 
-csv_file = r"..\simintech\model\modbus_signal\variables.csv"
 script_dir = os.path.dirname(__file__)
 
 
@@ -36,13 +35,13 @@ def add_variables(csv_file, model_id):
     abs_file_path = os.path.join(script_dir, csv_file)
     f = open(abs_file_path)
     reader = csv.reader(f)
-    for name, modbus_unit, register_nmb in reader:
-        if (int(modbus_unit) == 1) or (int(modbus_unit) == 4):
-            u = Measurementvariable(name=name, register_number=register_nmb,
-                                    modbus_unit=modbus_unit, model_id=model_id)
+    for name, type, nmb in reader:
+        if type == 'reg':
+            u = Measurementvariable(name=name, register_number=nmb,
+                                    model_id=model_id)
         else:
-            u = Signalvariable(name=name, register_number=register_nmb,
-                               modbus_unit=modbus_unit, model_id=model_id)
+            u = Signalvariable(name=name, bit_number=nmb,
+                               model_id=model_id)
         db.session.add(u)
     db.session.commit()
 
@@ -117,6 +116,8 @@ class Simulation():
         self.model_process = Popen(self.SIT_start_pattern
                                    .format(self.model_filename),
                                    stdout=PIPE, shell=True)
+
+        print(self.SIT_start_pattern.format(self.model_filename))
 
         # Дальше запускаем проверку окна "О программе".
         # После его закрытия считаем что SIT запущен

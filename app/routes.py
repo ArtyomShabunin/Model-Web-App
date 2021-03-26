@@ -7,7 +7,7 @@
 import asyncio
 from quart import jsonify, request
 from app import app
-from app.simulation import Simulation
+from app.simulation import Simulation, add_variables
 from pymodbus.client.asynchronous.tcp \
      import AsyncModbusTCPClient as ModbusClient
 from pymodbus.client.asynchronous import schedulers
@@ -20,6 +20,7 @@ from app.restarts_handler \
 import time
 import os
 
+from app import db
 from app.models import Measurementvariable, Signalvariable, Model
 
 sim = Simulation()
@@ -277,15 +278,43 @@ async def rest_rewrite_restart(restart_name):
     return f'Рестарт {restart_name} перезаписан как {new_name}'
 
 
-@app.route('/model', methods=['GET'])
+@app.route('/model', methods=['GET', 'POST'])
 async def get_models():
     """
     Список доступных моделей
 
     Функция выдает список моделей из базы данных.
+    Пример json
+    {
+        "description": "Модель котла с системой пара СН",
+        "filename": "..\\..\\..\\tpp-simulator\\pac\\boiler_model_auxsteam.pak",
+        "name": "boiler_model"
+    }
     """
-    return jsonify(Model.query.all())
+    if request.method == 'POST':
+        model = await request.get_json()
 
+        db.session.add(Model(**model))
+        db.session.commit()
+
+        return model
+    else:
+        return jsonify([item.serialize for item in Model.query.all()])
+
+
+@app.route('/model/<string:id>', methods=['GET'])
+def get_model(id):
+    return jsonify(Model.query.filter_by(id=int(id)).first().serialize)
+
+
+@app.route('/model/<string:id>/variables', methods=['POST'])
+async def add_variable(id):
+    """
+    csv_file = r"..\simintech\model\modbus_signal\variables.csv"
+    """
+    csv_file = await request.get_json()
+    add_variables(model_id=id, **csv_file)
+    return 'Переменные добавлены'
 
 # @app.route('/modelselection',methods = ['GET'])
 # def Modelselection():

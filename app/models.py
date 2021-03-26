@@ -25,6 +25,16 @@ class Model(db.Model):
                                        lazy='dynamic')
     achives = db.relationship('Achive', backref='Model', lazy='dynamic')
 
+    @property
+    def serialize(self):
+        """Return object data in easily serializable format"""
+        return {'id': self.id,
+                'name': self.name,
+                'description': self.description,
+                'filename': self.filename,
+                'measurement_variables': [item.serialize for item in self.measurement_variables],
+                'signal_variables': [item.serialize for item in self.signal_variables]}
+
     def __repr__(self):
         return '<Model-{}>'.format(self.name)
 
@@ -33,12 +43,18 @@ class Measurementvariable(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), index=True, unique=False)
     register_number = db.Column(db.Integer)
-    modbus_unit = db.Column(db.Integer)
     max_value = db.Column(db.Float)
     min_value = db.Column(db.Float)
     measurements = db.relationship('Measurement', backref='Variable',
                                    lazy='dynamic')
     model_id = db.Column(db.Integer, db.ForeignKey('model.id'))
+
+    @property
+    def serialize(self):
+        """Return object data in easily serializable format"""
+        return {'id': self.id,
+                'name': self.name,
+                'register_number': self.register_number}
 
     def __repr__(self):
         return '<Variable - {}>'.format(self.name)
@@ -47,11 +63,17 @@ class Measurementvariable(db.Model):
 class Signalvariable(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), index=True, unique=False)
-    register_number = db.Column(db.Integer)
-    modbus_unit = db.Column(db.Integer)
+    bit_number = db.Column(db.Integer)
     measurements = db.relationship('Signal', backref='Variable',
                                    lazy='dynamic')
     model_id = db.Column(db.Integer, db.ForeignKey('model.id'))
+
+    @property
+    def serialize(self):
+        """Return object data in easily serializable format"""
+        return {'id': self.id,
+                'name': self.name,
+                'bit_number': self.bit_number}
 
     def __repr__(self):
         return '<Variable - {}>'.format(self.name)
