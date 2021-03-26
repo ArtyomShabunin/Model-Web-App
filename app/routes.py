@@ -310,7 +310,9 @@ def get_model(id):
 @app.route('/model/<string:id>/variables', methods=['POST'])
 async def add_variable(id):
     """
-    csv_file = r"..\simintech\model\modbus_signal\variables.csv"
+    {
+	   "csv_file":"..\\..\\tpp-simulator\\modbus_signal\\variables.csv"
+    }
     """
     csv_file = await request.get_json()
     add_variables(model_id=id, **csv_file)
